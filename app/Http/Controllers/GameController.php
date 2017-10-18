@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Competition;
 use App\Game;
+use App\Score;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
@@ -10,11 +12,12 @@ class GameController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Competition $competition
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Competition $competition)
     {
-        //
+        return response(Game::where('competition_id', $competition->id)->get());
     }
 
     /**
@@ -30,12 +33,33 @@ class GameController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
+     * @param Competition $competition
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Competition $competition)
     {
-        //
+     //   return response(var_export($request->json()->all(), true));
+
+        $newGame = $request->json()->all();
+
+        $gameScores = $newGame['scores'];
+
+        unset($newGame['scores']);
+
+        $newGame['competition_id'] = $competition->id;
+        $gameModel = Game::create($newGame);
+
+
+        foreach($gameScores as $score){
+            $score['game_id'] = $gameModel->id;
+
+            Score::create($score);
+
+        }
+
+        return response(Game::where('id', $gameModel->id)->with('scores')->get());
+
     }
 
     /**

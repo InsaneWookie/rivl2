@@ -19,3 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::resource('competitor', 'CompetitorController');
 Route::resource('competition', 'CompetitionController');
+//Route::resource('game', 'GameController');
+
+Route::resource('competition.game', 'GameController');

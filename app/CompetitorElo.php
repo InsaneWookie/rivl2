@@ -1,15 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Rowan
- * Date: 13/10/2017
- * Time: 8:42 PM
- */
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class CompetitorElo
+class CompetitorElo extends Pivot
 {
-
+    protected $table = 'competitor_elo';
+    public $timestamps = false;
 }
