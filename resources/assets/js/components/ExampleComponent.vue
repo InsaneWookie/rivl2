@@ -6,7 +6,11 @@
                     <div class="panel-heading">Example Component</div>
 
                     <div class="panel-body">
-                        I'm an example component!
+                        <ul>
+                            <li v-for="(item, index) in items">
+                                {{ item.name }}
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -16,8 +20,17 @@
 
 <script>
     export default {
+
         mounted() {
-            console.log('Component mounted.')
+        },
+        data: function () {
+            //this is totally not the way to get data
+            var data = {items: []};
+            axios.get('/api/competition').then(function (response) {
+                data.items = response.data;
+            });
+
+            return data;
         }
     }
 </script>
