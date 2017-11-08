@@ -11,6 +11,6 @@ class Competitor extends Model
 
     public function competitions()
     {
-        return $this->belongsToMany('App\Competition')->using('App\CompetitorElo');
+        return $this->belongsToMany('App\Competition')->withPivot('elo');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Competition;
 use App\Competitor;
 use Illuminate\Http\Request;
 
@@ -10,11 +11,12 @@ class CompetitorController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Competition $competition
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Competition $competition)
     {
-        return response(Competitor::all()->toArray());
+        return response($competition->load('competitors'));
     }
 
     /**

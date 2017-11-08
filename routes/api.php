@@ -22,3 +22,4 @@ Route::resource('competition', 'CompetitionController');
 //Route::resource('game', 'GameController');
 
 Route::resource('competition.game', 'GameController');
+Route::resource('competition.competitor', 'CompetitorController');

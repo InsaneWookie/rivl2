@@ -68,9 +68,9 @@ class GameController extends Controller
      * @param  \App\Game  $game
      * @return \Illuminate\Http\Response
      */
-    public function show(Game $game)
+    public function show(Competition $competition, Game $game)
     {
-        //
+        return response($game);
     }
 
     /**

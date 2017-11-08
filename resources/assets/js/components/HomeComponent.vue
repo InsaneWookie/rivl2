@@ -3,19 +3,21 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Example Component</div>
+                    <div class="panel-heading">Games</div>
 
                     <div class="panel-body">
                         <ul>
                             <li v-for="(item, index) in items">
-                                {{ item.name }}
+                                <router-link :to="{name: 'competition', params: {id: item.id}}">{{ item.name }}</router-link>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
+
 </template>
 
 <script>
@@ -25,7 +27,7 @@
         },
         data: function () {
             //this is totally not the way to get data
-            var data = {items: []};
+            let data = {items: []};
             axios.get('/api/competition').then(function (response) {
                 data.items = response.data;
             });
