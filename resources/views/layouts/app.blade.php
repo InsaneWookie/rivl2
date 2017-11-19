@@ -14,12 +14,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
-        <navbar-component></navbar-component>
-
-        <router-view></router-view>
-    </div>
-
+    <div id="root"></div>
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
