@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Competition extends Model
 {
     protected $table = 'competition';
-    public $timestamps = false;
+    public $timestamps = true;
+
+    protected $guarded = [];
 
     public function competitors()
     {

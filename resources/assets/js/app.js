@@ -14,5 +14,6 @@ require('./bootstrap');
  */
 
 require('./components/Layout');
+require('./components/CreateCompetition');
 require('./components/Competitions');
 require('./components/Navbar');

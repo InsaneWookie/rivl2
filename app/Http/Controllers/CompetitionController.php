@@ -24,7 +24,7 @@ class CompetitionController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -35,7 +35,9 @@ class CompetitionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $competition = $request->json()->all();
+
+        return response(Competition::create($competition));
     }
 
     /**

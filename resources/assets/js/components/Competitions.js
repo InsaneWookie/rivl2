@@ -13,7 +13,9 @@ export default class Competitions extends Component {
 
                             <div className="panel-body">
                                 <ul>
-                                    {this.props.competitions.map((item, index) => ( <li key={index}>{item.name}</li> ))}
+                                    {this.props.competitions.map((item, index) => (
+                                        <li key={index}><a href={`#competition/${item.id}`}>{item.name}</a></li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>
@@ -23,7 +25,3 @@ export default class Competitions extends Component {
         );
     }
 }
-
-// if (document.getElementById('example')) {
-//     ReactDOM.render(<Example />, document.getElementById('example'));
-// }
