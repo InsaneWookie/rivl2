@@ -8,3 +8,26 @@
 //@import "~bootstrap-sass/assets/stylesheets/bootstrap";
 @import '~bootstrap/dist/css/bootstrap-reboot.min.css';
 @import '~bootstrap/dist/css/bootstrap.min.css';
+
+body {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 600px;
+}
+
+.main-nav {
+  background: #fff;
+}
+
+.avatar {
+}
+.avatar-r {
+  border-radius: 50%;
+}
+.avatar-sm {
+  width: 40px;
+  height: 40px;
+}

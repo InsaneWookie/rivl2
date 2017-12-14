@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import Navbar from './Navbar';
 import Competitions from './Competitions';
+import Competition from './Competition';
 import EnterGames from './EnterGames';
 import Competitor from './Competitor';
 
@@ -41,31 +42,35 @@ export default class Layout extends Component {
 
   render() {
     return (
-      <div>
-        <Navbar />
-        <div id="content">
-          <Router>
-            <div>
-              TEST LINKS:<br />
-              <Link to="/home">Competitions</Link>
-              |
-              <Link to="/enter-scores">Enter Games</Link>
-              |
-              <Link to="/competitor">Competitor</Link>
-              |
-              <hr />
-              <Route
-                path="/home"
-                render={() => (
-                  <Competitions competitions={this.state.competitions} />
-                )}
-              />
-              <Route path="/enter-scores" render={() => <EnterGames />} />
-              <Route path="/competitor" render={() => <Competitor />} />
-            </div>
-          </Router>
+      <Router>
+        <div>
+          <Navbar />
+          <div className="container">
+            TEST LINKS:<br />
+            <Link to="/home">Competitions</Link>
+            |
+            <Link to="/competition">Competition</Link>
+            |
+            <Link to="/enter-scores">Enter Games</Link>
+            |
+            <Link to="/competitor">Competitor</Link>
+            |
+            <hr />
+            <Route
+              path="/home"
+              render={() => (
+                <Competitions competitions={this.state.competitions} />
+              )}
+            />
+            <Route
+              path="/competition"
+              render={() => <Competition competition={1} />}
+            />
+            <Route path="/enter-scores" render={() => <EnterGames />} />
+            <Route path="/competitor" render={() => <Competitor />} />
+          </div>
         </div>
-      </div>
+      </Router>
     );
   }
 }

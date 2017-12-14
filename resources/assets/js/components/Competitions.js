@@ -6,8 +6,8 @@ import CreateCompetition from './CreateCompetition';
 export default class Competitions extends Component {
   render() {
     return (
-      <div className="container mb-5">
-        <div className="card">
+      <div>
+        <div className="card mb-4">
           <div className="card-body">
             <h4 className="card-title">Competitions</h4>
           </div>
@@ -19,7 +19,6 @@ export default class Competitions extends Component {
             ))}
           </ul>
         </div>
-
         <CreateCompetition />
       </div>
     );

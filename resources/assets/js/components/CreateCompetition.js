@@ -27,40 +27,38 @@ export default class CreateCompetition extends Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="card">
-          <div className="card-body">
-            <h4 className="card-title">New competition</h4>
-            <form onSubmit={this.handleSubmit}>
-              <label htmlFor="newComp">Competition name:</label>
+      <div className="card">
+        <div className="card-body">
+          <h4 className="card-title">New competition</h4>
+          <form onSubmit={this.handleSubmit}>
+            <label htmlFor="newComp">Competition name:</label>
 
-              <div className="input-group">
+            <div className="input-group">
+              <input
+                id="newComp"
+                type="text"
+                className="form-control"
+                defaultValue={this.state.competition.name}
+                onChange={e =>
+                  this.setState({
+                    competition: {
+                      ...this.state.competition,
+                      name: e.target.value
+                    }
+                  })
+                }
+              />
+              <span className="input-group-btn">
                 <input
-                  id="newComp"
-                  type="text"
-                  className="form-control"
-                  defaultValue={this.state.competition.name}
-                  onChange={e =>
-                    this.setState({
-                      competition: {
-                        ...this.state.competition,
-                        name: e.target.value
-                      }
-                    })
-                  }
+                  className="btn btn-primary"
+                  type="submit"
+                  value="Create"
                 />
-                <span className="input-group-btn">
-                  <input
-                    className="btn btn-primary"
-                    type="submit"
-                    value="Create"
-                  />
-                </span>
-              </div>
+              </span>
+            </div>
 
-              {/*<input type="text" value={this.state.competition.other} onChange={e => this.setState({competition: {...this.state.competition,  other: e.target.value }})} />*/}
-            </form>
-          </div>
+            {/*<input type="text" value={this.state.competition.other} onChange={e => this.setState({competition: {...this.state.competition,  other: e.target.value }})} />*/}
+          </form>
         </div>
       </div>
     );
