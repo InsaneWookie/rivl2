@@ -1,10 +1,29 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
 import axios from 'axios';
 
 import Navbar from './Navbar';
 import Competitions from './Competitions';
-import CreateCompetition from './CreateCompetition';
+import EnterGames from './EnterGames';
+import Competitor from './Competitor';
+
+// const renderMergedProps = (component, ...rest) => {
+//   const finalProps = Object.assign({}, ...rest);
+//   return React.createElement(component, finalProps);
+// };
+//
+// const PropsRoute = ({ component, ...rest }) => {
+//   return (
+//     <Route
+//       {...rest}
+//       render={routeProps => {
+//         return renderMergedProps(component, routeProps, rest);
+//       }}
+//     />
+//   );
+// };
 
 export default class Layout extends Component {
   constructor(props) {
@@ -25,8 +44,26 @@ export default class Layout extends Component {
       <div>
         <Navbar />
         <div id="content">
-          <Competitions competitions={this.state.competitions} />
-          <CreateCompetition />
+          <Router>
+            <div>
+              TEST LINKS:<br />
+              <Link to="/home">Competitions</Link>
+              |
+              <Link to="/enter-scores">Enter Games</Link>
+              |
+              <Link to="/competitor">Competitor</Link>
+              |
+              <hr />
+              <Route
+                path="/home"
+                render={() => (
+                  <Competitions competitions={this.state.competitions} />
+                )}
+              />
+              <Route path="/enter-scores" render={() => <EnterGames />} />
+              <Route path="/competitor" render={() => <Competitor />} />
+            </div>
+          </Router>
         </div>
       </div>
     );

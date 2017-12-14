@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
+import CreateCompetition from './CreateCompetition';
+
 export default class Competitions extends Component {
   render() {
     return (
@@ -17,6 +19,8 @@ export default class Competitions extends Component {
             ))}
           </ul>
         </div>
+
+        <CreateCompetition />
       </div>
     );
   }
