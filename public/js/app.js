@@ -12209,11 +12209,6 @@ var Example = function (_Component) {
   return Example;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-// if (document.getElementById('nav')) {
-//     ReactDOM.render(<Example/>, document.getElementById('nav'));
-// }
-
-
 /* harmony default export */ __webpack_exports__["default"] = (Example);
 
 /***/ }),
@@ -12482,22 +12477,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-// const renderMergedProps = (component, ...rest) => {
-//   const finalProps = Object.assign({}, ...rest);
-//   return React.createElement(component, finalProps);
-// };
-//
-// const PropsRoute = ({ component, ...rest }) => {
-//   return (
-//     <Route
-//       {...rest}
-//       render={routeProps => {
-//         return renderMergedProps(component, routeProps, rest);
-//       }}
-//     />
-//   );
-// };
-
 var Layout = function (_Component) {
   _inherits(Layout, _Component);
 
@@ -12536,33 +12515,36 @@ var Layout = function (_Component) {
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'container' },
-            'TEST LINKS:',
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-              { to: '/home' },
-              'Competitions'
+              'div',
+              { className: 'alert alert-info' },
+              'TEST LINKS:',
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
+                { to: '/home' },
+                'Competitions'
+              ),
+              '|',
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
+                { to: '/competition' },
+                'Competition'
+              ),
+              '|',
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
+                { to: '/enter-scores' },
+                'Enter Games'
+              ),
+              '|',
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
+                { to: '/competitor' },
+                'Competitor'
+              ),
+              '|'
             ),
-            '|',
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-              { to: '/competition' },
-              'Competition'
-            ),
-            '|',
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-              { to: '/enter-scores' },
-              'Enter Games'
-            ),
-            '|',
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-              __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-              { to: '/competitor' },
-              'Competitor'
-            ),
-            '|',
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('hr', null),
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_router_dom__["c" /* Route */], {
               path: '/home',
               render: function render() {
@@ -28461,7 +28443,20 @@ var Competitor = function (_Component) {
   function Competitor() {
     _classCallCheck(this, Competitor);
 
-    return _possibleConstructorReturn(this, (Competitor.__proto__ || Object.getPrototypeOf(Competitor)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Competitor.__proto__ || Object.getPrototypeOf(Competitor)).call(this));
+
+    _this.state = {
+      competitionName: 'Table tennis',
+      player: {
+        name: 'Liam Johnston',
+        id: 111,
+        points: 1655,
+        games: 666,
+        winPercentage: 64,
+        avatar: 'http://via.placeholder.com/80x80'
+      }
+    };
+    return _this;
   }
 
   _createClass(Competitor, [{
@@ -28469,19 +28464,92 @@ var Competitor = function (_Component) {
     value: function render() {
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
-        { className: 'card' },
+        null,
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
-          { className: 'card-body' },
+          { className: 'card mb-4' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            'h4',
-            { className: 'card-title' },
-            '[Competitor name]'
+            'div',
+            { className: 'card-body' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'h4',
+              { className: 'card-title d-flex align-items-center mb-0' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', {
+                src: this.state.player.avatar,
+                alt: this.state.player.name + '\'s avatar\'',
+                className: 'avatar mr-4'
+              }),
+              this.state.player.name
+            )
+          )
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          'div',
+          { className: 'card mb-4' },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'card-body' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'h4',
+              { className: 'card-title d-flex align-items-center' },
+              this.state.competitionName
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'p',
+              null,
+              this.state.player.points,
+              ' points (2nd)'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'p',
+              null,
+              this.state.player.games,
+              ' games (',
+              this.state.player.winPercentage,
+              '% wins)'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'p',
+              null,
+              'Main rivl: ',
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'a',
+                { href: '#' },
+                'Some guy'
+              )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'h3',
+              null,
+              'Recent games'
+            ),
+            'graph here'
+          )
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          'div',
+          { className: 'card mb-4' },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'card-body' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'h4',
+              { className: 'card-title d-flex align-items-center' },
+              'Other stats'
+            )
           ),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            'p',
-            null,
-            'I am a competitor!'
+            'ul',
+            { className: 'list-group list-group-flush' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'li',
+              { className: 'list-group-item' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'a',
+                { href: '#' },
+                'Some other sport'
+              )
+            )
           )
         )
       );
@@ -28511,33 +28579,247 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+var competitors = {
+  1: {
+    name: 'Liam Johnston',
+    id: 111,
+    points: 1655,
+    avatar: 'http://via.placeholder.com/80x80'
+  },
+  2: {
+    name: 'Rowan Tate',
+    id: 222,
+    points: 1615,
+    avatar: 'http://via.placeholder.com/80x80'
+  },
+  3: {
+    name: 'Someone else',
+    id: 333,
+    points: 1155,
+    avatar: 'http://via.placeholder.com/80x80'
+  },
+  4: {
+    name: 'Jonathan Bartlett',
+    id: 444,
+    points: 1050,
+    avatar: 'http://via.placeholder.com/80x80'
+  },
+  5: {
+    name: 'Suzy Cato',
+    id: 555,
+    points: 1323,
+    avatar: 'http://via.placeholder.com/80x80'
+  }
+};
+
 var EnterGames = function (_Component) {
   _inherits(EnterGames, _Component);
 
   function EnterGames() {
     _classCallCheck(this, EnterGames);
 
-    return _possibleConstructorReturn(this, (EnterGames.__proto__ || Object.getPrototypeOf(EnterGames)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (EnterGames.__proto__ || Object.getPrototypeOf(EnterGames)).call(this));
+
+    _this.state = {
+      gameCount: 1
+    };
+
+    _this.addGameRow = _this.addGameRow.bind(_this);
+    _this.removeGameRow = _this.removeGameRow.bind(_this);
+    return _this;
   }
 
   _createClass(EnterGames, [{
-    key: "render",
+    key: 'addGameRow',
+    value: function addGameRow() {
+      var count = this.state.gameCount;
+      this.setState({
+        gameCount: count + 1
+      });
+    }
+  }, {
+    key: 'removeGameRow',
+    value: function removeGameRow() {
+      var count = this.state.gameCount;
+      if (count > 1) {
+        this.setState({
+          gameCount: count - 1
+        });
+      }
+    }
+  }, {
+    key: 'setGameWinner',
+    value: function setGameWinner(game, winner) {
+      console.log({ game: game }, { winner: winner });
+    }
+  }, {
+    key: 'render',
     value: function render() {
+      var _this2 = this;
+
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        "div",
-        { className: "card" },
+        'div',
+        { className: 'card' },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          "div",
-          { className: "card-body" },
+          'div',
+          { className: 'card-body' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            "h4",
-            { className: "card-title" },
-            "Enter scores"
+            'h4',
+            { className: 'card-title' },
+            'Enter scores'
           ),
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            "p",
-            null,
-            "yada yada"
+            'div',
+            { className: 'row mt-4' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-5 pr-0' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'label',
+                { htmlFor: 'player-1' },
+                'Player 1'
+              ),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'select',
+                { className: 'form-control', name: 'player-1', id: 'player-1' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: '' },
+                  'Dropdowns suck'
+                ),
+                Object.keys(competitors).map(function (key, index) {
+                  return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: competitors[key].id, key: competitors[key].id },
+                    competitors[key].name
+                  );
+                })
+              )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-2 text-center' },
+              'VS'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'col-5 pl-0 text-right' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'label',
+                { htmlFor: 'player-2' },
+                'Player 2'
+              ),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'select',
+                { className: 'form-control', name: 'player-2', id: 'player-2' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  { value: '' },
+                  'Dropdowns suck'
+                ),
+                Object.keys(competitors).map(function (key, index) {
+                  return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: competitors[key].id, key: competitors[key].id },
+                    competitors[key].name
+                  );
+                })
+              )
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'counter-wrap text-center my-4' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'label',
+              null,
+              'Games played'
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('br', null),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'div',
+              { className: 'btn-group', role: 'group' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'button',
+                {
+                  type: 'button',
+                  className: 'btn btn-secondary',
+                  onClick: this.removeGameRow
+                },
+                '-'
+              ),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'span',
+                { className: 'input-group-addon bg-light' },
+                this.state.gameCount
+              ),
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'button',
+                {
+                  type: 'button',
+                  className: 'btn btn-secondary',
+                  onClick: this.addGameRow
+                },
+                '+'
+              )
+            )
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'game-rows' },
+            Array.from({ length: this.state.gameCount }, function (_, k) {
+              return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'row my-2', key: k },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'div',
+                  { className: 'col-3 pr-0' },
+                  __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'button',
+                    {
+                      className: 'btn btn-secondary btn-block',
+                      onClick: function onClick() {
+                        return _this2.setGameWinner(k + 1, 1);
+                      }
+                    },
+                    'Win'
+                  )
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'div',
+                  { className: 'col-6 d-flex align-items-center justify-content-center' },
+                  __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'strong',
+                    null,
+                    'Game ',
+                    k + 1
+                  )
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'div',
+                  { className: 'col-3 pl-0 text-right' },
+                  __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'button',
+                    {
+                      className: 'btn btn-secondary btn-block',
+                      onClick: function onClick() {
+                        return _this2.setGameWinner(k + 1, 2);
+                      }
+                    },
+                    'Win'
+                  )
+                )
+              );
+            })
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'text-center mt-4' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'button',
+              { className: 'btn btn-success btn-block btn-inline-sm' },
+              'Submit'
+            )
           )
         )
       );

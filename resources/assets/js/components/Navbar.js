@@ -15,7 +15,3 @@ export default class Example extends Component {
     );
   }
 }
-
-// if (document.getElementById('nav')) {
-//     ReactDOM.render(<Example/>, document.getElementById('nav'));
-// }
