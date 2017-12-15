@@ -26,6 +26,10 @@ label {
   background: #fff;
 }
 
+.nav-title {
+  font-weight: bold;
+}
+
 .avatar-r {
   border-radius: 50%;
 }

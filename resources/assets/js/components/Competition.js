@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 
 const competitors = {
   1: {
@@ -49,14 +50,14 @@ export default class Competition extends Component {
                 key={index}
               >
                 <div className="position mr-3">1st</div>
-                <a href="#">
+                <Link to="/competitor">
                   <img
                     className="avatar avatar-r avatar-sm mr-3"
                     src={competitors[key].avatar}
                   />
-                </a>
+                </Link>
                 <div className="name">
-                  <a href="#">{competitors[key].name}</a>
+                  <Link to="/competitor">{competitors[key].name}</Link>
                 </div>
                 <div className="points ml-auto">{competitors[key].points}</div>
               </li>
@@ -72,11 +73,11 @@ export default class Competition extends Component {
             <li className="list-group-item">
               <div className="row">
                 <div className="col-5">
-                  <a href="#">Liam Johnston</a>
+                  <Link to="/competitor">Liam Johnston</Link>
                 </div>
                 <div className="col-2 text-center text-nowrap">2 - 1</div>
                 <div className="col-5 text-right">
-                  <a href="#">Rowan Tate</a>
+                  <Link to="/competitor">Rowan Tate</Link>
                 </div>
               </div>
             </li>
@@ -84,11 +85,11 @@ export default class Competition extends Component {
             <li className="list-group-item">
               <div className="row">
                 <div className="col-5">
-                  <a href="#">Avi Mishra</a>
+                  <Link to="/competitor">Avi Mishra</Link>
                 </div>
                 <div className="col-2 text-center text-nowrap">5 - 0</div>
                 <div className="col-5 text-right">
-                  <a href="#">Jonathan Bartlett</a>
+                  <Link to="/competitor">Jonathan Bartlett</Link>
                 </div>
               </div>
             </li>

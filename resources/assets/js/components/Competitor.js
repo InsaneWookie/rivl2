@@ -46,7 +46,9 @@ export default class Competitor extends Component {
             <p>
               Main rivl: <a href="#">Some guy</a>
             </p>
-            <h3>Recent games</h3>
+            <p>
+              <strong>Recent games</strong>
+            </p>
             graph here
           </div>
         </div>

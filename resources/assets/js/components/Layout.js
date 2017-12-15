@@ -34,7 +34,7 @@ export default class Layout extends Component {
               TEST LINKS:<br />
               <Link to="/home">Competitions</Link>
               |
-              <Link to="/competition">Competition</Link>
+              <Link to="/competition:1">Competition</Link>
               |
               <Link to="/enter-scores">Enter Games</Link>
               |
@@ -49,7 +49,7 @@ export default class Layout extends Component {
               )}
             />
             <Route
-              path="/competition"
+              path="/competition:id"
               render={() => <Competition competition={1} />}
             />
             <Route path="/enter-scores" render={() => <EnterGames />} />
