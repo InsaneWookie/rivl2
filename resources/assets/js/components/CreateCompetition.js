@@ -27,7 +27,7 @@ export default class CreateCompetition extends Component {
 
   render() {
     return (
-      <div className="card">
+      <div className="card main-card mb-4">
         <div className="card-body">
           <h4 className="card-title">New competition</h4>
           <form onSubmit={this.handleSubmit}>

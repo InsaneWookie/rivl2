@@ -1,44 +1,15 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import EnterGameRow from './EnterGameRow';
-
-const competitors = {
-  1: {
-    name: 'Liam Johnston',
-    id: 111,
-    points: 1655,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  2: {
-    name: 'Rowan Tate',
-    id: 222,
-    points: 1615,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  3: {
-    name: 'Someone else',
-    id: 333,
-    points: 1155,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  4: {
-    name: 'Jonathan Bartlett',
-    id: 444,
-    points: 1050,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  5: {
-    name: 'Suzy Cato',
-    id: 555,
-    points: 1323,
-    avatar: 'http://via.placeholder.com/80x80'
-  }
-};
 
 export default class EnterGames extends Component {
   constructor() {
     super();
 
     this.state = {
+      competitors: [],
+      isLoading: true,
+      allEntered: false,
       //Format:
       //game# : winner
       //e.g. 1:1, 2:1, 3:2, 4:2
@@ -52,7 +23,30 @@ export default class EnterGames extends Component {
     this.addGameRow = this.addGameRow.bind(this);
     this.removeGameRow = this.removeGameRow.bind(this);
     this.setGameWinner = this.setGameWinner.bind(this);
+    this.checkAllEntered = this.checkAllEntered.bind(this);
+    this.submitScores = this.submitScores.bind(this);
   }
+
+  componentWillMount() {
+    axios
+      .get(`/api/competition/1/competitor`)
+      .then(res => {
+        this.setState({
+          competitors: res.data.competitors,
+          isLoading: false
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  //TODO: this seems cleaner than remembering to call it all over the place,
+  //      but it spazzed out when i tried it
+
+  // componentDidUpdate() {
+  //   this.checkAllEntered();
+  // }
 
   addGameRow() {
     const count = Object.keys(this.state.gameResults).length;
@@ -60,7 +54,8 @@ export default class EnterGames extends Component {
     results[count + 1] = 0;
 
     this.setState({
-      gameResults: results
+      gameResults: results,
+      allEntered: false
     });
   }
 
@@ -77,6 +72,8 @@ export default class EnterGames extends Component {
     this.setState({
       gameResults: results
     });
+
+    this.checkAllEntered();
   }
 
   setGameWinner(game, winner) {
@@ -90,12 +87,24 @@ export default class EnterGames extends Component {
       gameResults: results
     });
 
-    console.table(this.state.gameResults);
+    this.checkAllEntered();
+  }
+
+  checkAllEntered() {
+    if (Object.values(this.state.gameResults).includes(0)) {
+      this.setState({ allEntered: false });
+    } else {
+      this.setState({ allEntered: true });
+    }
+  }
+
+  submitScores() {
+    console.log('todo');
   }
 
   render() {
     return (
-      <div className="card">
+      <div className="card main-card mb-4">
         <div className="card-body">
           <h4 className="card-title">Enter scores</h4>
           <div className="row mt-4">
@@ -103,9 +112,10 @@ export default class EnterGames extends Component {
               <label htmlFor="player-1">Player 1</label>
               <select className="form-control" name="player-1" id="player-1">
                 <option value="">Dropdowns suck</option>
-                {Object.keys(competitors).map((key, index) => (
-                  <option value={competitors[key].id} key={competitors[key].id}>
-                    {competitors[key].name}
+                {this.state.isLoading === true && <option>Loading...</option>}
+                {this.state.competitors.map(competitor => (
+                  <option value={competitor.id} key={competitor.id}>
+                    {competitor.name}
                   </option>
                 ))}
               </select>
@@ -115,9 +125,10 @@ export default class EnterGames extends Component {
               <label htmlFor="player-2">Player 2</label>
               <select className="form-control" name="player-2" id="player-2">
                 <option value="">Dropdowns suck</option>
-                {Object.keys(competitors).map((key, index) => (
-                  <option value={competitors[key].id} key={competitors[key].id}>
-                    {competitors[key].name}
+                {this.state.isLoading === true && <option>Loading...</option>}
+                {this.state.competitors.map(competitor => (
+                  <option value={competitor.id} key={competitor.id}>
+                    {competitor.name}
                   </option>
                 ))}
               </select>
@@ -160,7 +171,10 @@ export default class EnterGames extends Component {
           </div>
 
           <div className="text-center mt-4">
-            <button className="btn btn-success btn-block btn-inline-sm">
+            <button
+              className="btn btn-success btn-block btn-inline-sm"
+              disabled={!this.state.allEntered}
+            >
               Submit
             </button>
           </div>

@@ -12317,7 +12317,7 @@ var Competitions = function (_Component) {
         null,
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
-          { className: 'card mb-4' },
+          { className: 'card main-card mb-4' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'card-body' },
@@ -12417,7 +12417,7 @@ var CreateCompetition = function (_Component) {
 
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
-        { className: 'card' },
+        { className: 'card main-card mb-4' },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
           { className: 'card-body' },
@@ -12479,7 +12479,9 @@ var CreateCompetition = function (_Component) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EnterGameRow__ = __webpack_require__(271);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__EnterGameRow__ = __webpack_require__(271);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -12491,38 +12493,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var competitors = {
-  1: {
-    name: 'Liam Johnston',
-    id: 111,
-    points: 1655,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  2: {
-    name: 'Rowan Tate',
-    id: 222,
-    points: 1615,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  3: {
-    name: 'Someone else',
-    id: 333,
-    points: 1155,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  4: {
-    name: 'Jonathan Bartlett',
-    id: 444,
-    points: 1050,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  5: {
-    name: 'Suzy Cato',
-    id: 555,
-    points: 1323,
-    avatar: 'http://via.placeholder.com/80x80'
-  }
-};
 
 var EnterGames = function (_Component) {
   _inherits(EnterGames, _Component);
@@ -12533,6 +12503,9 @@ var EnterGames = function (_Component) {
     var _this = _possibleConstructorReturn(this, (EnterGames.__proto__ || Object.getPrototypeOf(EnterGames)).call(this));
 
     _this.state = {
+      competitors: [],
+      isLoading: true,
+      allEntered: false,
       //Format:
       //game# : winner
       //e.g. 1:1, 2:1, 3:2, 4:2
@@ -12546,10 +12519,34 @@ var EnterGames = function (_Component) {
     _this.addGameRow = _this.addGameRow.bind(_this);
     _this.removeGameRow = _this.removeGameRow.bind(_this);
     _this.setGameWinner = _this.setGameWinner.bind(_this);
+    _this.checkAllEntered = _this.checkAllEntered.bind(_this);
+    _this.submitScores = _this.submitScores.bind(_this);
     return _this;
   }
 
   _createClass(EnterGames, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var _this2 = this;
+
+      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/api/competition/1/competitor').then(function (res) {
+        _this2.setState({
+          competitors: res.data.competitors,
+          isLoading: false
+        });
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    //TODO: this seems cleaner than remembering to call it all over the place,
+    //      but it spazzed out when i tried it
+
+    // componentDidUpdate() {
+    //   this.checkAllEntered();
+    // }
+
+  }, {
     key: 'addGameRow',
     value: function addGameRow() {
       var count = Object.keys(this.state.gameResults).length;
@@ -12557,7 +12554,8 @@ var EnterGames = function (_Component) {
       results[count + 1] = 0;
 
       this.setState({
-        gameResults: results
+        gameResults: results,
+        allEntered: false
       });
     }
   }, {
@@ -12575,6 +12573,8 @@ var EnterGames = function (_Component) {
       this.setState({
         gameResults: results
       });
+
+      this.checkAllEntered();
     }
   }, {
     key: 'setGameWinner',
@@ -12589,16 +12589,30 @@ var EnterGames = function (_Component) {
         gameResults: results
       });
 
-      console.table(this.state.gameResults);
+      this.checkAllEntered();
+    }
+  }, {
+    key: 'checkAllEntered',
+    value: function checkAllEntered() {
+      if (Object.values(this.state.gameResults).includes(0)) {
+        this.setState({ allEntered: false });
+      } else {
+        this.setState({ allEntered: true });
+      }
+    }
+  }, {
+    key: 'submitScores',
+    value: function submitScores() {
+      console.log('todo');
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
-        { className: 'card' },
+        { className: 'card main-card mb-4' },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
           { className: 'card-body' },
@@ -12626,11 +12640,16 @@ var EnterGames = function (_Component) {
                   { value: '' },
                   'Dropdowns suck'
                 ),
-                Object.keys(competitors).map(function (key, index) {
+                this.state.isLoading === true && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  null,
+                  'Loading...'
+                ),
+                this.state.competitors.map(function (competitor) {
                   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'option',
-                    { value: competitors[key].id, key: competitors[key].id },
-                    competitors[key].name
+                    { value: competitor.id, key: competitor.id },
+                    competitor.name
                   );
                 })
               )
@@ -12651,11 +12670,16 @@ var EnterGames = function (_Component) {
                   { value: '' },
                   'Dropdowns suck'
                 ),
-                Object.keys(competitors).map(function (key, index) {
+                this.state.isLoading === true && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                  'option',
+                  null,
+                  'Loading...'
+                ),
+                this.state.competitors.map(function (competitor) {
                   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'option',
-                    { value: competitors[key].id, key: competitors[key].id },
-                    competitors[key].name
+                    { value: competitor.id, key: competitor.id },
+                    competitor.name
                   );
                 })
               )
@@ -12702,11 +12726,11 @@ var EnterGames = function (_Component) {
             'div',
             { className: 'game-rows' },
             Object.keys(this.state.gameResults).map(function (k) {
-              return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__EnterGameRow__["a" /* default */], {
-                setGameWinner: _this2.setGameWinner,
+              return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__EnterGameRow__["a" /* default */], {
+                setGameWinner: _this3.setGameWinner,
                 key: k,
                 game: k,
-                winner: _this2.state.gameResults[k]
+                winner: _this3.state.gameResults[k]
               });
             })
           ),
@@ -12715,7 +12739,10 @@ var EnterGames = function (_Component) {
             { className: 'text-center mt-4' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'button',
-              { className: 'btn btn-success btn-block btn-inline-sm' },
+              {
+                className: 'btn btn-success btn-block btn-inline-sm',
+                disabled: !this.state.allEntered
+              },
               'Submit'
             )
           )
@@ -12780,7 +12807,7 @@ var Competitor = function (_Component) {
         null,
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
-          { className: 'card mb-4' },
+          { className: 'card main-card mb-4' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'card-body' },
@@ -12798,7 +12825,7 @@ var Competitor = function (_Component) {
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
-          { className: 'card mb-4' },
+          { className: 'card main-card mb-4' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'card-body' },
@@ -12845,7 +12872,7 @@ var Competitor = function (_Component) {
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
-          { className: 'card mb-4' },
+          { className: 'card main-card mb-4' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'card-body' },
@@ -12952,10 +12979,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Layout = function (_Component) {
   _inherits(Layout, _Component);
 
-  function Layout(props) {
+  function Layout() {
     _classCallCheck(this, Layout);
 
-    var _this = _possibleConstructorReturn(this, (Layout.__proto__ || Object.getPrototypeOf(Layout)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Layout.__proto__ || Object.getPrototypeOf(Layout)).call(this));
 
     _this.state = {
       competitions: []
@@ -12964,8 +12991,8 @@ var Layout = function (_Component) {
   }
 
   _createClass(Layout, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
       var _this2 = this;
 
       __WEBPACK_IMPORTED_MODULE_3_axios___default.a.get('/api/competition').then(function (res) {
@@ -13006,13 +13033,13 @@ var Layout = function (_Component) {
               '|',
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-                { to: '/enter-scores' },
+                { to: '/competition/1/enter-scores' },
                 'Enter Games'
               ),
               '|',
               __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-                { to: '/competitor' },
+                { to: '/competition/1/competitor' },
                 'Competitor'
               ),
               '|'
@@ -13029,12 +13056,18 @@ var Layout = function (_Component) {
                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Competition__["a" /* default */], { competition: 1 });
               }
             }),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_router_dom__["c" /* Route */], { path: '/enter-scores', render: function render() {
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_router_dom__["c" /* Route */], {
+              path: '/competition/1/enter-scores',
+              render: function render() {
                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_7__EnterGames__["default"], null);
-              } }),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_router_dom__["c" /* Route */], { path: '/competitor', render: function render() {
+              }
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_router_dom__["c" /* Route */], {
+              path: '/competition/1/competitor',
+              render: function render() {
                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_8__Competitor__["default"], null);
-              } })
+              }
+            })
           )
         )
       );
@@ -28828,6 +28861,8 @@ module.exports = function spread(callback) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_dom__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_router_dom__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_axios__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_axios__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28840,49 +28875,37 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var competitors = {
-  1: {
-    name: 'Liam Johnston',
-    id: 111,
-    points: 1655,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  2: {
-    name: 'Rowan Tate',
-    id: 222,
-    points: 1615,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  3: {
-    name: 'Someone else',
-    id: 333,
-    points: 1155,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  4: {
-    name: 'Jonathan Bartlett',
-    id: 444,
-    points: 1050,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  5: {
-    name: 'Suzy Cato',
-    id: 555,
-    points: 1323,
-    avatar: 'http://via.placeholder.com/80x80'
-  }
-};
 
 var Competition = function (_Component) {
   _inherits(Competition, _Component);
 
-  function Competition() {
+  function Competition(props) {
     _classCallCheck(this, Competition);
 
-    return _possibleConstructorReturn(this, (Competition.__proto__ || Object.getPrototypeOf(Competition)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Competition.__proto__ || Object.getPrototypeOf(Competition)).call(this, props));
+
+    _this.state = {
+      competitors: [],
+      isLoading: true
+    };
+    return _this;
   }
 
   _createClass(Competition, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var _this2 = this;
+
+      __WEBPACK_IMPORTED_MODULE_3_axios___default.a.get('/api/competition/' + this.props.competition + '/competitor').then(function (res) {
+        _this2.setState({
+          competitors: res.data.competitors,
+          isLoading: false
+        });
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }, {
     key: 'showMore',
     value: function showMore(e) {
       e.preventDefault();
@@ -28896,7 +28919,7 @@ var Competition = function (_Component) {
         null,
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
-          { className: 'card mb-4' },
+          { className: 'card main-card mb-4' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'card-body' },
@@ -28909,12 +28932,17 @@ var Competition = function (_Component) {
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'ul',
             { className: 'list-group list-group-flush' },
-            Object.keys(competitors).map(function (key, index) {
+            this.state.isLoading === true && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'li',
+              { className: 'list-group-item' },
+              '[spinner]'
+            ),
+            this.state.competitors.map(function (competitor) {
               return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'li',
                 {
                   className: 'list-group-item d-flex align-items-center',
-                  key: index
+                  key: competitor.id
                 },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   'div',
@@ -28926,7 +28954,7 @@ var Competition = function (_Component) {
                   { to: '/competitor' },
                   __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('img', {
                     className: 'avatar avatar-r avatar-sm mr-3',
-                    src: competitors[key].avatar
+                    src: 'http://via.placeholder.com/80x80'
                   })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -28935,13 +28963,13 @@ var Competition = function (_Component) {
                   __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
                     { to: '/competitor' },
-                    competitors[key].name
+                    competitor.name
                   )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                   'div',
                   { className: 'points ml-auto' },
-                  competitors[key].points
+                  Math.round(competitor.elo.elo)
                 )
               );
             }),
@@ -28962,7 +28990,7 @@ var Competition = function (_Component) {
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
-          { className: 'card mb-4' },
+          { className: 'card main-card mb-4' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'card-body' },
@@ -29041,7 +29069,7 @@ var Competition = function (_Component) {
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'div',
-          { className: 'card mb-4' },
+          { className: 'card main-card mb-4' },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'card-body' },

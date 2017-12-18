@@ -8,7 +8,7 @@ export default class Competitions extends Component {
   render() {
     return (
       <div>
-        <div className="card mb-4">
+        <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title">Competitions</h4>
           </div>

@@ -1,41 +1,31 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
-
-const competitors = {
-  1: {
-    name: 'Liam Johnston',
-    id: 111,
-    points: 1655,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  2: {
-    name: 'Rowan Tate',
-    id: 222,
-    points: 1615,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  3: {
-    name: 'Someone else',
-    id: 333,
-    points: 1155,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  4: {
-    name: 'Jonathan Bartlett',
-    id: 444,
-    points: 1050,
-    avatar: 'http://via.placeholder.com/80x80'
-  },
-  5: {
-    name: 'Suzy Cato',
-    id: 555,
-    points: 1323,
-    avatar: 'http://via.placeholder.com/80x80'
-  }
-};
+import axios from 'axios';
 
 export default class Competition extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      competitors: [],
+      isLoading: true
+    };
+  }
+
+  componentWillMount() {
+    axios
+      .get(`/api/competition/${this.props.competition}/competitor`)
+      .then(res => {
+        this.setState({
+          competitors: res.data.competitors,
+          isLoading: false
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   showMore(e) {
     e.preventDefault();
     console.log('cats');
@@ -44,29 +34,35 @@ export default class Competition extends Component {
   render() {
     return (
       <div>
-        <div className="card mb-4">
+        <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title mb-0">Leaderboard</h4>
           </div>
           <ul className="list-group list-group-flush">
-            {Object.keys(competitors).map((key, index) => (
+            {this.state.isLoading === true && (
+              <li className="list-group-item">[spinner]</li>
+            )}
+            {this.state.competitors.map(competitor => (
               <li
                 className="list-group-item d-flex align-items-center"
-                key={index}
+                key={competitor.id}
               >
                 <div className="position mr-3">1st</div>
                 <Link to="/competitor">
                   <img
                     className="avatar avatar-r avatar-sm mr-3"
-                    src={competitors[key].avatar}
+                    src="http://via.placeholder.com/80x80"
                   />
                 </Link>
                 <div className="name">
-                  <Link to="/competitor">{competitors[key].name}</Link>
+                  <Link to="/competitor">{competitor.name}</Link>
                 </div>
-                <div className="points ml-auto">{competitors[key].points}</div>
+                <div className="points ml-auto">
+                  {Math.round(competitor.elo.elo)}
+                </div>
               </li>
             ))}
+
             <li className="list-group-item text-center">
               <a
                 href="#"
@@ -79,7 +75,7 @@ export default class Competition extends Component {
           </ul>
         </div>
 
-        <div className="card mb-4">
+        <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title mb-0">Recent results</h4>
           </div>
@@ -110,7 +106,7 @@ export default class Competition extends Component {
           </ul>
         </div>
 
-        <div className="card mb-4">
+        <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title">Add a player</h4>
             ...how?

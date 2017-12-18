@@ -21,7 +21,7 @@ export default class Competitor extends Component {
   render() {
     return (
       <div>
-        <div className="card mb-4">
+        <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title d-flex align-items-center mb-0">
               <img
@@ -33,7 +33,7 @@ export default class Competitor extends Component {
             </h4>
           </div>
         </div>
-        <div className="card mb-4">
+        <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title d-flex align-items-center">
               {this.state.competitionName}
@@ -53,7 +53,7 @@ export default class Competitor extends Component {
           </div>
         </div>
         {/* IF has played other sports: */}
-        <div className="card mb-4">
+        <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title d-flex align-items-center">
               Other stats

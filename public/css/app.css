@@ -52,18 +52,18 @@ label {
     background: #ddd;
   }
 
-  .container .card-body {
-    padding: 0;
-  }
-
-  .container .card {
+  .main-card {
     border: 0;
     border-radius: 0;
   }
 
-  .container .card .list-group-item {
+  .main-card .list-group-item {
     padding-left: 0;
     padding-right: 0;
+  }
+
+  .main-card .card-body {
+    padding: 0;
   }
 }
 

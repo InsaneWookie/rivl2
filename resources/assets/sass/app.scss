@@ -52,20 +52,15 @@ label {
     background: #ddd;
   }
 
-  .container {
-    //  padding: 0;
+  .main-card {
+    border: 0;
+    border-radius: 0;
+    .list-group-item {
+      padding-left: 0;
+      padding-right: 0;
+    }
     .card-body {
       padding: 0;
-    }
-    .card {
-      //  padding: 0;
-      border: 0;
-      border-radius: 0;
-      //  margin: 0;
-      .list-group-item {
-        padding-left: 0;
-        padding-right: 0;
-      }
     }
   }
 }
