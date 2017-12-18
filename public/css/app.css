@@ -18,6 +18,10 @@ label {
   font-weight: bold;
 }
 
+.btn input[type='radio'] {
+  display: none;
+}
+
 .container {
   max-width: 600px;
 }

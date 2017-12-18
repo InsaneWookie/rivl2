@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import EnterGameRow from './EnterGameRow';
 
 const competitors = {
   1: {
@@ -38,31 +39,58 @@ export default class EnterGames extends Component {
     super();
 
     this.state = {
-      gameCount: 1
+      //Format:
+      //game# : winner
+      //e.g. 1:1, 2:1, 3:2, 4:2
+      //We always have at least one row.
+      //0 means there is no winner set yet.
+      gameResults: {
+        1: 0
+      }
     };
 
     this.addGameRow = this.addGameRow.bind(this);
     this.removeGameRow = this.removeGameRow.bind(this);
+    this.setGameWinner = this.setGameWinner.bind(this);
   }
 
   addGameRow() {
-    const count = this.state.gameCount;
+    const count = Object.keys(this.state.gameResults).length;
+    const results = this.state.gameResults;
+    results[count + 1] = 0;
+
     this.setState({
-      gameCount: count + 1
+      gameResults: results
     });
   }
 
   removeGameRow() {
-    const count = this.state.gameCount;
-    if (count > 1) {
-      this.setState({
-        gameCount: count - 1
-      });
+    const count = Object.keys(this.state.gameResults).length;
+
+    if (count === 1) {
+      return false;
     }
+
+    const results = this.state.gameResults;
+    delete results[count];
+
+    this.setState({
+      gameResults: results
+    });
   }
 
   setGameWinner(game, winner) {
     console.log({ game }, { winner });
+
+    const results = this.state.gameResults;
+    results[game] = winner;
+
+    //is this mutating state...?
+    this.setState({
+      gameResults: results
+    });
+
+    console.table(this.state.gameResults);
   }
 
   render() {
@@ -71,7 +99,7 @@ export default class EnterGames extends Component {
         <div className="card-body">
           <h4 className="card-title">Enter scores</h4>
           <div className="row mt-4">
-            <div className="col-5 pr-0">
+            <div className="col-6">
               <label htmlFor="player-1">Player 1</label>
               <select className="form-control" name="player-1" id="player-1">
                 <option value="">Dropdowns suck</option>
@@ -82,8 +110,8 @@ export default class EnterGames extends Component {
                 ))}
               </select>
             </div>
-            <div className="col-2 text-center">VS</div>
-            <div className="col-5 pl-0 text-right">
+            {/* <div className="col-2 text-center">VS</div> */}
+            <div className="col-6 text-right">
               <label htmlFor="player-2">Player 2</label>
               <select className="form-control" name="player-2" id="player-2">
                 <option value="">Dropdowns suck</option>
@@ -108,7 +136,7 @@ export default class EnterGames extends Component {
                 -
               </button>
               <span className="input-group-addon bg-light">
-                {this.state.gameCount}
+                {Object.keys(this.state.gameResults).length}
               </span>
               <button
                 type="button"
@@ -121,28 +149,13 @@ export default class EnterGames extends Component {
           </div>
 
           <div className="game-rows">
-            {Array.from({ length: this.state.gameCount }, (_, k) => (
-              <div className="row my-2" key={k}>
-                <div className="col-3 pr-0">
-                  <button
-                    className="btn btn-secondary btn-block"
-                    onClick={() => this.setGameWinner(k + 1, 1)}
-                  >
-                    Win
-                  </button>
-                </div>
-                <div className="col-6 d-flex align-items-center justify-content-center">
-                  <strong>Game {k + 1}</strong>
-                </div>
-                <div className="col-3 pl-0 text-right">
-                  <button
-                    className="btn btn-secondary btn-block"
-                    onClick={() => this.setGameWinner(k + 1, 2)}
-                  >
-                    Win
-                  </button>
-                </div>
-              </div>
+            {Object.keys(this.state.gameResults).map(k => (
+              <EnterGameRow
+                setGameWinner={this.setGameWinner}
+                key={k}
+                game={k}
+                winner={this.state.gameResults[k]}
+              />
             ))}
           </div>
 
