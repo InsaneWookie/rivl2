@@ -28883,6 +28883,12 @@ var Competition = function (_Component) {
   }
 
   _createClass(Competition, [{
+    key: 'showMore',
+    value: function showMore(e) {
+      e.preventDefault();
+      console.log('cats');
+    }
+  }, {
     key: 'render',
     value: function render() {
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -28896,7 +28902,7 @@ var Competition = function (_Component) {
             { className: 'card-body' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'h4',
-              { className: 'card-title' },
+              { className: 'card-title mb-0' },
               'Leaderboard'
             )
           ),
@@ -28938,7 +28944,20 @@ var Competition = function (_Component) {
                   competitors[key].points
                 )
               );
-            })
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+              'li',
+              { className: 'list-group-item text-center' },
+              __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'a',
+                {
+                  href: '#',
+                  onClick: this.showMore,
+                  className: 'leaderboard-show-more'
+                },
+                'Show more \u25BE'
+              )
+            )
           )
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -28949,7 +28968,7 @@ var Competition = function (_Component) {
             { className: 'card-body' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
               'h4',
-              { className: 'card-title' },
+              { className: 'card-title mb-0' },
               'Recent results'
             )
           ),

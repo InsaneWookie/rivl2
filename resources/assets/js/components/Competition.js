@@ -36,12 +36,17 @@ const competitors = {
 };
 
 export default class Competition extends Component {
+  showMore(e) {
+    e.preventDefault();
+    console.log('cats');
+  }
+
   render() {
     return (
       <div>
         <div className="card mb-4">
           <div className="card-body">
-            <h4 className="card-title">Leaderboard</h4>
+            <h4 className="card-title mb-0">Leaderboard</h4>
           </div>
           <ul className="list-group list-group-flush">
             {Object.keys(competitors).map((key, index) => (
@@ -62,12 +67,21 @@ export default class Competition extends Component {
                 <div className="points ml-auto">{competitors[key].points}</div>
               </li>
             ))}
+            <li className="list-group-item text-center">
+              <a
+                href="#"
+                onClick={this.showMore}
+                className="leaderboard-show-more"
+              >
+                Show more &#9662;
+              </a>
+            </li>
           </ul>
         </div>
 
         <div className="card mb-4">
           <div className="card-body">
-            <h4 className="card-title">Recent results</h4>
+            <h4 className="card-title mb-0">Recent results</h4>
           </div>
           <ul className="list-group list-group-flush">
             <li className="list-group-item">

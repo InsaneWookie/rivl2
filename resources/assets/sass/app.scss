@@ -42,3 +42,30 @@ label {
   width: 40px;
   height: 40px;
 }
+
+@media screen and (max-width: 450px) {
+  body {
+    background: #fff;
+  }
+
+  .main-nav {
+    background: #ddd;
+  }
+
+  .container {
+    //  padding: 0;
+    .card-body {
+      padding: 0;
+    }
+    .card {
+      //  padding: 0;
+      border: 0;
+      border-radius: 0;
+      //  margin: 0;
+      .list-group-item {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+}
