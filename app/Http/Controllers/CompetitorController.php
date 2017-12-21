@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Competition;
 use App\Competitor;
+use App\CompetitorElo;
 use Illuminate\Http\Request;
 
 class CompetitorController extends Controller
@@ -16,7 +17,7 @@ class CompetitorController extends Controller
      */
     public function index(Competition $competition)
     {
-        return response($competition->load('competitors'));
+        return response($competition->competitors);
     }
 
     /**
@@ -32,12 +33,19 @@ class CompetitorController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
+     * @param Competition $competition
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Competition $competition)
     {
-        //
+        $competitor = $request->json()->all();
+
+        $newCompetitor = Competitor::create($competitor);
+
+        CompetitorElo::create(['competition_id' => $competition->id, 'competitor_id' => $newCompetitor->id, 'elo' => 1500]);
+
+        return response(Competitor::where('id', $newCompetitor->id)->get());
     }
 
     /**
@@ -46,9 +54,9 @@ class CompetitorController extends Controller
      * @param  \App\Competitor  $competitor
      * @return \Illuminate\Http\Response
      */
-    public function show(Competitor $competitor)
+    public function show(Competition $competition, Competitor $competitor)
     {
-
+        return response($competitor);
     }
 
     /**

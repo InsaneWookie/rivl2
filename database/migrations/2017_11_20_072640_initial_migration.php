@@ -26,7 +26,7 @@ class InitialMigration extends Migration
             $table->string('name', 128);
             $table->string('email', 128);
             $table->string('status', 20)->default('active');
-            $table->string('challonge_username', 128);
+            $table->string('challonge_username', 128)->nullable();
             $table->timestamps();
         });
 
@@ -34,9 +34,9 @@ class InitialMigration extends Migration
             $table->increments('id');
             $table->integer('competition_id');
             $table->integer('competitor_id');
-            $table->decimal('elo', 64, 4);
+            $table->decimal('elo', 64, 4)->default(1500);
             $table->string('status', 20)->default('active');
-            $table->string('pseudonym', 128);
+            $table->string('pseudonym', 128)->nullable();
             $table->timestamps();
         });
 
