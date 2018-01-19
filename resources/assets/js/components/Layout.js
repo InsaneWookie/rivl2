@@ -34,7 +34,7 @@ export default class Layout extends Component {
               TEST LINKS:<br />
               <Link to="/home">Competitions</Link>
               |
-              <Link to="/competition:1">Competition</Link>
+              <Link to="/competition/1">Competition</Link>
               |
               <Link to="/competition/1/enter-scores">Enter Games</Link>
               |
@@ -53,8 +53,8 @@ export default class Layout extends Component {
               Cmpetiton.js currently expects a 'competition' prop to make its API call
             */}
             <Route
-              path="/competition:id"
-              render={() => <Competition competition={1} />}
+              path="/competition/:id"
+              render={(routeProps) => <Competition competition={routeProps.match.params.id} />}
             />
             {/*
               ditto similar issue here:

@@ -8,16 +8,22 @@ export default class Competition extends Component {
     super(props);
     this.state = {
       competitors: [],
-      isLoading: true
+      isLoading: true,
+      player_name: '',
+      player_email: ''
     };
+
+    //this is BS having to bind evey event handler function
+    this.handleAddPlayer = this.handleAddPlayer.bind(this);
   }
 
   componentWillMount() {
     axios
       .get(`/api/competition/${this.props.competition}/competitor`)
       .then(res => {
+        console.log(res.data);
         this.setState({
-          competitors: res.data.competitors,
+          competitors: res.data,
           isLoading: false
         });
       })
@@ -29,6 +35,18 @@ export default class Competition extends Component {
   showMore(e) {
     e.preventDefault();
     console.log('cats');
+  }
+
+  handleAddPlayer(event) {
+    // alert(JSON.stringify(this.state));
+
+    axios.post(`/api/competition/${this.props.competition}/competitor`, {name: this.state.player_name, email: this.state.player_email})
+      .then(res => {
+        console.log(res.data);
+        this.setState({ competitors: [ ...this.state.competitors, res.data[0] ] });
+    });
+
+    event.preventDefault();
   }
 
   render() {
@@ -109,7 +127,11 @@ export default class Competition extends Component {
         <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title">Add a player</h4>
-            ...how?
+              <input type="text" name="player_name" placeholder="name"
+                     onChange={e => this.setState({ player_name: e.target.value })}/>
+              <input name="player_email" placeholder="email"
+                     onChange={e => this.setState({ player_email: e.target.value })}/>
+              <button onClick={this.handleAddPlayer}>Add</button>
           </div>
         </div>
       </div>
