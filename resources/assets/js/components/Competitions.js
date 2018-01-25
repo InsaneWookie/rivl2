@@ -5,6 +5,10 @@ import { Link } from 'react-router-dom';
 import CreateCompetition from './CreateCompetition';
 
 export default class Competitions extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <div>
@@ -15,7 +19,7 @@ export default class Competitions extends Component {
           <ul className="list-group list-group-flush">
             {this.props.competitions.map((item, index) => (
               <li className="list-group-item" key={index}>
-                <Link to={`/competition/${item.id}`}>{item.name}</Link>
+                <Link to={`/competition/${item.id}`} onClick={() => this.props.setCompetition(item)}>{item.name}</Link>
               </li>
             ))}
           </ul>

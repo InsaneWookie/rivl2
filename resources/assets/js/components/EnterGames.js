@@ -1,12 +1,18 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
 import EnterGameRow from './EnterGameRow';
 
+import GameController from '../controllers/GameController';
+
 export default class EnterGames extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    console.log(props);
 
     this.state = {
+     // competition: props.competition,
+      competitionId: props.competitionId,
       competitors: [],
       isLoading: true,
       allEntered: false,
@@ -17,7 +23,14 @@ export default class EnterGames extends Component {
       //0 means there is no winner set yet.
       gameResults: {
         1: 0
-      }
+      },
+      scores: [
+        // {competitor1_id: 1, competitor2_id: 2, winner: 1}
+      ],
+
+      selectedPlayer1Id: '',
+      selectedPlayer2Id: ''
+
     };
 
     this.addGameRow = this.addGameRow.bind(this);
@@ -25,14 +38,18 @@ export default class EnterGames extends Component {
     this.setGameWinner = this.setGameWinner.bind(this);
     this.checkAllEntered = this.checkAllEntered.bind(this);
     this.submitScores = this.submitScores.bind(this);
+    this.handlePlayer1Change = this.handlePlayer1Change.bind(this);
+    this.handlePlayer2Change = this.handlePlayer2Change.bind(this);
   }
 
   componentWillMount() {
+
+    //load all the competitors for this competition
     axios
-      .get(`/api/competition/1/competitor`)
+      .get(`/api/competition/${this.state.competitionId}/competitor`)
       .then(res => {
         this.setState({
-          competitors: res.data.competitors,
+          competitors: res.data,
           isLoading: false
         });
       })
@@ -41,22 +58,24 @@ export default class EnterGames extends Component {
       });
   }
 
-  //TODO: this seems cleaner than remembering to call it all over the place,
-  //      but it spazzed out when i tried it
-
-  // componentDidUpdate() {
-  //   this.checkAllEntered();
-  // }
-
   addGameRow() {
-    const count = Object.keys(this.state.gameResults).length;
-    const results = this.state.gameResults;
-    results[count + 1] = 0;
+    // const count = Object.keys(this.state.gameResults).length;
+    // const results = this.state.gameResults;
+    // results[count + 1] = 0;
+    //
+    // this.setState({
+    //   gameResults: results,
+    //   allEntered: false
+    // });
 
-    this.setState({
-      gameResults: results,
+    this.setState(prevState => ({
+      scores: [...prevState.scores, {
+        competitor1_id: this.state.selectedPlayer1Id,
+        competitor2_id: this.state.selectedPlayer2Id,
+        winner: null}],
+
       allEntered: false
-    });
+    }))
   }
 
   removeGameRow() {
@@ -77,29 +96,72 @@ export default class EnterGames extends Component {
   }
 
   setGameWinner(game, winner) {
-    console.log({ game }, { winner });
+    console.log({game}, {winner});
 
-    const results = this.state.gameResults;
-    results[game] = winner;
+    // const results = this.state.gameResults;
+    // results[game] = winner;
+    //
+    //
+    // this.setState({
+    //   gameResults: results
+    // });
 
-    //is this mutating state...?
-    this.setState({
-      gameResults: results
-    });
+
+
+    let scores = [...this.state.scores];     // create the copy of state array
+    scores[game].winner = winner;                  //new value
+    this.setState({ scores });            //update the value
 
     this.checkAllEntered();
   }
 
   checkAllEntered() {
-    if (Object.values(this.state.gameResults).includes(0)) {
-      this.setState({ allEntered: false });
-    } else {
-      this.setState({ allEntered: true });
-    }
+    let allEntered = this.state.scores.some((s) => s.winner !== null);
+    this.setState({allEntered});
+
+    // if (Object.values(this.state.gameResults).includes(0)) {
+    //   this.setState({allEntered: false});
+    // } else {
+    //   this.setState({allEntered: true});
+    // }
   }
 
   submitScores() {
-    console.log('todo');
+    //TODO: needs some thought
+    // let rivlScores = [];
+    //
+    // this.state.scores.forEach((s) => {
+    //   rivlScores.push({
+    //     competitor_id: s.winner,
+    //     rank: s.competitor1_id === s.winner ? 11 : 0,
+    //     score: s.competitor1_id === s.winner ? 11 : 0
+    //   }) ;
+    //   rivlScores.push({
+    //     competitor_id: s.winner,
+    //     rank: s.competitor2_id === s.winner ? 11 : 0,
+    //     score: s.competitor2_id === s.winner ? 1 : 2
+    //   }) ;
+    // });
+    //
+    // let data = {
+    //   "competition_id": this.state.competitionId,
+    //   "scores": [{
+    //     "competitor_id": 1,
+    //     "rank": 1,
+    //     "score": 4,
+    //     "elo_before": 123,
+    //     "elo_after": 321}]
+    // };
+    //
+    // axios.post(`/api/competition/${this.state.competitionId}/game`, data)
+  }
+
+  handlePlayer1Change(e){
+    this.setState({selectedPlayer1Id: e.target.value});
+  }
+
+  handlePlayer2Change(e){
+    this.setState({selectedPlayer2Id: e.target.value});
   }
 
   render() {
@@ -110,7 +172,8 @@ export default class EnterGames extends Component {
           <div className="row mt-4">
             <div className="col-6">
               <label htmlFor="player-1">Player 1</label>
-              <select className="form-control" name="player-1" id="player-1">
+              <select className="form-control" name="player-1" id="player-1"
+                      value={this.state.selectedPlayer1Id} onChange={this.handlePlayer1Change}>
                 <option value="">Dropdowns suck</option>
                 {this.state.isLoading === true && <option>Loading...</option>}
                 {this.state.competitors.map(competitor => (
@@ -123,7 +186,8 @@ export default class EnterGames extends Component {
             {/* <div className="col-2 text-center">VS</div> */}
             <div className="col-6 text-right">
               <label htmlFor="player-2">Player 2</label>
-              <select className="form-control" name="player-2" id="player-2">
+              <select className="form-control" name="player-2" id="player-2"
+                      value={this.state.selectedPlayer2Id} onChange={this.handlePlayer2Change}>
                 <option value="">Dropdowns suck</option>
                 {this.state.isLoading === true && <option>Loading...</option>}
                 {this.state.competitors.map(competitor => (
@@ -137,7 +201,7 @@ export default class EnterGames extends Component {
 
           <div className="counter-wrap text-center my-4">
             <label>Games played</label>
-            <br />
+            <br/>
             <div className="btn-group" role="group">
               <button
                 type="button"
@@ -160,12 +224,12 @@ export default class EnterGames extends Component {
           </div>
 
           <div className="game-rows">
-            {Object.keys(this.state.gameResults).map(k => (
+            {this.state.scores.map((score, index) => (
               <EnterGameRow
                 setGameWinner={this.setGameWinner}
-                key={k}
-                game={k}
-                winner={this.state.gameResults[k]}
+                key={index}
+                score={score}
+                game={index}
               />
             ))}
           </div>
@@ -174,6 +238,7 @@ export default class EnterGames extends Component {
             <button
               className="btn btn-success btn-block btn-inline-sm"
               disabled={!this.state.allEntered}
+              onSubmit={this.submitScores}
             >
               Submit
             </button>

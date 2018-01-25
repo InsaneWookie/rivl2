@@ -14,8 +14,20 @@ export default class Layout extends Component {
   constructor() {
     super();
     this.state = {
-      competitions: []
+      competitions: [],
+      selectedCompetition: null
     };
+
+    this.setCompetition = this.setCompetition.bind(this);
+  }
+
+  setCompetition(competition){
+    this.setState({selectedCompetition: competition});
+  }
+
+  getCompetition(competitionId){
+    debugger;
+    return this.state.competitions.find((c) => c.id = competitionId)
   }
 
   componentWillMount() {
@@ -32,43 +44,28 @@ export default class Layout extends Component {
           <div className="container">
             <div className="alert alert-info">
               TEST LINKS:<br />
-              <Link to="/home">Competitions</Link>
+              <Link to="/competitions" onClick={() => this.setCompetition(null)}>Competitions</Link>
               |
-              <Link to="/competition/1">Competition</Link>
+              {this.state.selectedCompetition && <Link to={`/competition/${this.state.selectedCompetition.id}/enter-scores`}>Enter Games</Link>}
               |
-              <Link to="/competition/1/enter-scores">Enter Games</Link>
-              |
-              <Link to="/competition/1/competitor">Competitor</Link>
-              |
+              {this.state.selectedCompetition && <Link to={`/competition/${this.state.selectedCompetition.id}/competitor`}>Competitor</Link>}
             </div>
 
             <Route
-              path="/home"
-              render={() => (
-                <Competitions competitions={this.state.competitions} />
-              )}
+              path="/competitions"
+              render={() => <Competitions competitions={this.state.competitions} setCompetition={this.setCompetition} />}
             />
-            {/*
-              TODO: sort this out... URL should be like e.g. competition/5
-              Cmpetiton.js currently expects a 'competition' prop to make its API call
-            */}
             <Route
               path="/competition/:id"
               render={(routeProps) => <Competition competition={routeProps.match.params.id} />}
             />
-            {/*
-              ditto similar issue here:
-            */}
             <Route
-              path="/competition/1/enter-scores"
-              render={() => <EnterGames />}
+              path="/competition/:competitionId/enter-scores"
+              render={(routeProps) => <EnterGames competitionId={routeProps.match.params.competitionId}/>}
             />
-            {/*
-              and here:
-            */}
             <Route
-              path="/competition/1/competitor"
-              render={() => <Competitor />}
+              path="/competition/:competitionId/competitor"
+              render={(routeProps) => <Competitor competition={routeProps.match.params.competitionId}/>}
             />
           </div>
         </div>

@@ -15,6 +15,8 @@ export default class Competition extends Component {
 
     //this is BS having to bind evey event handler function
     this.handleAddPlayer = this.handleAddPlayer.bind(this);
+
+
   }
 
   componentWillMount() {
@@ -43,7 +45,9 @@ export default class Competition extends Component {
     axios.post(`/api/competition/${this.props.competition}/competitor`, {name: this.state.player_name, email: this.state.player_email})
       .then(res => {
         console.log(res.data);
-        this.setState({ competitors: [ ...this.state.competitors, res.data[0] ] });
+        let newComp = [ ...this.state.competitors, res.data ];
+        console.log(newComp);
+        this.setState({ competitors: newComp });
     });
 
     event.preventDefault();

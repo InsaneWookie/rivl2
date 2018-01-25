@@ -45,9 +45,8 @@ class CompetitorController extends Controller
 
         CompetitorElo::create(['competition_id' => $competition->id, 'competitor_id' => $newCompetitor->id, 'elo' => 1500]);
 
-        return response(Competitor::all()->toArray());
+        return response($competition->competitors->find($newCompetitor->id));
 
-//        return response(Competitor::where('id', $newCompetitor->id)->get());
     }
 
     /**
