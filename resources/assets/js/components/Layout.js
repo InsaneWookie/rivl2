@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -51,22 +51,24 @@ export default class Layout extends Component {
               {this.state.selectedCompetition && <Link to={`/competition/${this.state.selectedCompetition.id}/competitor`}>Competitor</Link>}
             </div>
 
-            <Route
-              path="/competitions"
-              render={() => <Competitions competitions={this.state.competitions} setCompetition={this.setCompetition} />}
-            />
-            <Route
-              path="/competition/:id"
-              render={(routeProps) => <Competition competition={routeProps.match.params.id} />}
-            />
-            <Route
-              path="/competition/:competitionId/enter-scores"
-              render={(routeProps) => <EnterGames competitionId={routeProps.match.params.competitionId}/>}
-            />
-            <Route
-              path="/competition/:competitionId/competitor"
-              render={(routeProps) => <Competitor competition={routeProps.match.params.competitionId}/>}
-            />
+            <Switch>
+              <Route exact
+                path="/competitions"
+                render={() => <Competitions competitions={this.state.competitions} setCompetition={this.setCompetition} />}
+              />
+              <Route exact
+                path="/competition/:id"
+                render={(routeProps) => <Competition competition={routeProps.match.params.id} />}
+              />
+              <Route exact
+                path="/competition/:competitionId/enter-scores"
+                render={(routeProps) => <EnterGames competitionId={routeProps.match.params.competitionId}/>}
+              />
+              <Route exact
+                path="/competition/:competitionId/competitor"
+                render={(routeProps) => <Competitor competition={routeProps.match.params.competitionId}/>}
+              />
+            </Switch>
           </div>
         </div>
       </Router>

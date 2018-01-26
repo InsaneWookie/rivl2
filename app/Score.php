@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Score extends Model
 {
     protected $table = 'score';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $guarded = [];
 }

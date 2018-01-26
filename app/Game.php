@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Game extends Model
 {
     protected $table = 'game';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $guarded = [];
 

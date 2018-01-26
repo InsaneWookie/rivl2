@@ -127,33 +127,47 @@ export default class EnterGames extends Component {
   }
 
   submitScores() {
+    debugger;
     //TODO: needs some thought
-    // let rivlScores = [];
-    //
-    // this.state.scores.forEach((s) => {
-    //   rivlScores.push({
-    //     competitor_id: s.winner,
-    //     rank: s.competitor1_id === s.winner ? 11 : 0,
-    //     score: s.competitor1_id === s.winner ? 11 : 0
-    //   }) ;
-    //   rivlScores.push({
-    //     competitor_id: s.winner,
-    //     rank: s.competitor2_id === s.winner ? 11 : 0,
-    //     score: s.competitor2_id === s.winner ? 1 : 2
-    //   }) ;
-    // });
-    //
-    // let data = {
-    //   "competition_id": this.state.competitionId,
-    //   "scores": [{
-    //     "competitor_id": 1,
-    //     "rank": 1,
-    //     "score": 4,
-    //     "elo_before": 123,
-    //     "elo_after": 321}]
-    // };
-    //
-    // axios.post(`/api/competition/${this.state.competitionId}/game`, data)
+
+    //TODO: at the moment the api only handle single game creation. Want to support mutiple I think
+
+    //need to convert the UI score format into the api format
+    //let games = [];
+    let competitionId = this.state.competitionId;
+
+    this.state.scores.forEach((s) => {
+
+      let game = {
+        competition_id: competitionId,
+        scores: [
+          {
+            competitor_id: s.winner,
+            rank: s.competitor1_id === s.winner ? 1 : 2,
+            score: s.competitor1_id === s.winner ? 11 : -1,
+            elo_before: 1500,
+            elo_after: 1500
+          },
+          {
+            competitor_id: s.winner,
+            rank: s.competitor2_id === s.winner ? 1 : 2,
+            score: s.competitor2_id === s.winner ? 11 : -1,
+            elo_before: 1500,
+            elo_after: 1500
+          }
+        ]
+      };
+
+      axios.post(`/api/competition/${this.state.competitionId}/game`, game)
+        .then((response) =>{
+          console.log(response);
+        })
+
+    });
+
+
+
+
   }
 
   handlePlayer1Change(e){
@@ -238,7 +252,7 @@ export default class EnterGames extends Component {
             <button
               className="btn btn-success btn-block btn-inline-sm"
               disabled={!this.state.allEntered}
-              onSubmit={this.submitScores}
+              onClick={this.submitScores}
             >
               Submit
             </button>
