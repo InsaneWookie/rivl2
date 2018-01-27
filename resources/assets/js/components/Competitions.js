@@ -7,9 +7,11 @@ import CreateCompetition from './CreateCompetition';
 export default class Competitions extends Component {
   constructor(props) {
     super(props);
+
+
   }
 
-  render() {
+   render() {
     return (
       <div>
         <div className="card main-card mb-4">
@@ -24,7 +26,7 @@ export default class Competitions extends Component {
             ))}
           </ul>
         </div>
-        <CreateCompetition />
+        <CreateCompetition createCompetition={this.props.createCompetition} />
       </div>
     );
   }

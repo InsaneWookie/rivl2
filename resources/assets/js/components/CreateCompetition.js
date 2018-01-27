@@ -18,9 +18,7 @@ export default class CreateCompetition extends Component {
   handleSubmit(event) {
     // alert(JSON.stringify(this.state));
 
-    axios.post('/api/competition', this.state.competition).then(res => {
-      //route to newly created competition
-    });
+    this.props.createCompetition(this.state.competition);
 
     event.preventDefault();
   }

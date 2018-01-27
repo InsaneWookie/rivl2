@@ -57,7 +57,7 @@ class CompetitorController extends Controller
      */
     public function show(Competition $competition, Competitor $competitor)
     {
-        return response($competitor);
+        return response($competition->competitors->find($competitor->id));
     }
 
     /**

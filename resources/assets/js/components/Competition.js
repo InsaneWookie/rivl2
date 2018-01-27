@@ -70,14 +70,14 @@ export default class Competition extends Component {
                 key={competitor.id}
               >
                 <div className="position mr-3">1st</div>
-                <Link to="/competitor">
+                <Link to={`/competition/${this.props.competition}/competitor/${competitor.id}`}>
                   <img
                     className="avatar avatar-r avatar-sm mr-3"
                     src="http://via.placeholder.com/80x80"
                   />
                 </Link>
                 <div className="name">
-                  <Link to="/competitor">{competitor.name}</Link>
+                  <Link to={`/competition/${this.props.competition}/competitor/${competitor.id}`}>{competitor.name}</Link>
                 </div>
                 <div className="points ml-auto">
                   {Math.round(competitor.elo.elo)}

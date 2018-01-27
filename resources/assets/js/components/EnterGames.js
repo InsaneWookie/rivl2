@@ -11,7 +11,7 @@ export default class EnterGames extends Component {
     console.log(props);
 
     this.state = {
-     // competition: props.competition,
+      // competition: props.competition,
       competitionId: props.competitionId,
       competitors: [],
       isLoading: true,
@@ -36,7 +36,6 @@ export default class EnterGames extends Component {
     this.addGameRow = this.addGameRow.bind(this);
     this.removeGameRow = this.removeGameRow.bind(this);
     this.setGameWinner = this.setGameWinner.bind(this);
-    this.checkAllEntered = this.checkAllEntered.bind(this);
     this.submitScores = this.submitScores.bind(this);
     this.handlePlayer1Change = this.handlePlayer1Change.bind(this);
     this.handlePlayer2Change = this.handlePlayer2Change.bind(this);
@@ -59,82 +58,63 @@ export default class EnterGames extends Component {
   }
 
   addGameRow() {
-    // const count = Object.keys(this.state.gameResults).length;
-    // const results = this.state.gameResults;
-    // results[count + 1] = 0;
-    //
-    // this.setState({
-    //   gameResults: results,
-    //   allEntered: false
-    // });
 
     this.setState(prevState => ({
-      scores: [...prevState.scores, {
-        competitor1_id: this.state.selectedPlayer1Id,
-        competitor2_id: this.state.selectedPlayer2Id,
-        winner: null}],
+      scores: [
+        ...prevState.scores,
+        {
+          competitor1_id: this.state.selectedPlayer1Id,
+          competitor2_id: this.state.selectedPlayer2Id,
+          winner: null
+        }
+      ],
 
       allEntered: false
-    }))
+    }));
   }
 
   removeGameRow() {
-    const count = Object.keys(this.state.gameResults).length;
+    let scores = [...this.state.scores];
+    scores.pop();
+    this.setState({
+      scores,
+      allEntered: this.getValidScores(scores, this.state.selectedPlayer1Id, this.state.selectedPlayer2Id)
+    });
+  }
 
-    if (count === 1) {
+  /**
+   * Winner is either 'left' or 'right'
+   * */
+  setGameWinner(game, winner) {
+    let scores = [...this.state.scores];
+    scores[game].winner = winner;
+    this.setState({
+      scores,
+      allEntered: this.getValidScores(scores, this.state.selectedPlayer1Id, this.state.selectedPlayer2Id)
+    });
+
+  }
+
+  getValidScores(scores, p1, p2) {
+    let allEntered = !scores.some((s) => s.winner === null);
+
+    //don't enable the button if they have selected the same person on both sides
+    if (p1 === p2 || p1 === '' || p2 === '') {
       return false;
     }
 
-    const results = this.state.gameResults;
-    delete results[count];
-
-    this.setState({
-      gameResults: results
-    });
-
-    this.checkAllEntered();
+    return allEntered;
   }
 
-  setGameWinner(game, winner) {
-    console.log({game}, {winner});
-
-    // const results = this.state.gameResults;
-    // results[game] = winner;
-    //
-    //
-    // this.setState({
-    //   gameResults: results
-    // });
-
-
-
-    let scores = [...this.state.scores];     // create the copy of state array
-    scores[game].winner = winner;                  //new value
-    this.setState({ scores });            //update the value
-
-    this.checkAllEntered();
-  }
-
-  checkAllEntered() {
-    let allEntered = this.state.scores.some((s) => s.winner !== null);
-    this.setState({allEntered});
-
-    // if (Object.values(this.state.gameResults).includes(0)) {
-    //   this.setState({allEntered: false});
-    // } else {
-    //   this.setState({allEntered: true});
-    // }
-  }
 
   submitScores() {
-    debugger;
-    //TODO: needs some thought
 
-    //TODO: at the moment the api only handle single game creation. Want to support mutiple I think
+    //TODO: at the moment the api only handles single game creation. Want to support multiple I think
 
     //need to convert the UI score format into the api format
-    //let games = [];
     let competitionId = this.state.competitionId;
+
+    let requests = [];
 
     this.state.scores.forEach((s) => {
 
@@ -142,40 +122,64 @@ export default class EnterGames extends Component {
         competition_id: competitionId,
         scores: [
           {
-            competitor_id: s.winner,
-            rank: s.competitor1_id === s.winner ? 1 : 2,
-            score: s.competitor1_id === s.winner ? 11 : -1,
+            competitor_id: s.competitor1_id,
+            rank: 'left' === s.winner ? 1 : 2,
+            score: 'left' === s.winner ? 11 : -1,
             elo_before: 1500,
             elo_after: 1500
           },
           {
-            competitor_id: s.winner,
-            rank: s.competitor2_id === s.winner ? 1 : 2,
-            score: s.competitor2_id === s.winner ? 11 : -1,
+            competitor_id: s.competitor2_id,
+            rank: 'right' === s.winner ? 1 : 2,
+            score: 'right' === s.winner ? 11 : -1,
             elo_before: 1500,
             elo_after: 1500
           }
         ]
       };
 
-      axios.post(`/api/competition/${this.state.competitionId}/game`, game)
-        .then((response) =>{
-          console.log(response);
-        })
+      requests.push(axios.post(`/api/competition/${this.state.competitionId}/game`, game));
 
     });
 
-
-
+    Promise.all(requests).then(console.log);
 
   }
 
-  handlePlayer1Change(e){
-    this.setState({selectedPlayer1Id: e.target.value});
+
+  rebuildScores(scores, competitor1Id, competitor2Id) {
+
+    scores.forEach((s) => {
+      s.competitor1_id = competitor1Id;
+      s.competitor2_id = competitor2Id;
+    });
+
+    return scores;
   }
 
-  handlePlayer2Change(e){
-    this.setState({selectedPlayer2Id: e.target.value});
+  handlePlayer1Change(e) {
+    let selectedPlayerId = e.target.value;
+    let newScores = this.rebuildScores([...this.state.scores], selectedPlayerId, this.state.selectedPlayer2Id);
+    let allEntered = this.getValidScores(newScores, selectedPlayerId, this.state.selectedPlayer2Id);
+
+    this.setState((prevState) => ({
+      selectedPlayer1Id: selectedPlayerId,
+      scores: newScores,
+      allEntered: allEntered
+    }));
+  }
+
+  handlePlayer2Change(e) {
+    let selectedPlayerId = e.target.value;
+
+    let newScores = this.rebuildScores([...this.state.scores], this.state.selectedPlayer1Id, selectedPlayerId);
+    let allEntered = this.getValidScores(newScores, this.state.selectedPlayer1Id, selectedPlayerId);
+
+    this.setState((prevState) => ({
+      selectedPlayer2Id: selectedPlayerId,
+      scores: newScores,
+      allEntered: allEntered
+    }));
   }
 
   render() {
@@ -224,9 +228,9 @@ export default class EnterGames extends Component {
               >
                 -
               </button>
-              <span className="input-group-addon bg-light">
-                {Object.keys(this.state.gameResults).length}
-              </span>
+              {/*<span className="input-group-addon bg-light">*/}
+              {/*{Object.keys(this.state.gameResults).length}*/}
+              {/*</span>*/}
               <button
                 type="button"
                 className="btn btn-secondary"

@@ -1,21 +1,58 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 
 export default class Competitor extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      competitionName: 'Table tennis',
+      competition: {},
+
       player: {
-        name: 'Liam Johnston',
-        id: 111,
-        points: 1655,
-        games: 666,
-        winPercentage: 64,
+        id: 0,
+        name: '',
+        points: 0,
+        games: 0,
+        winPercentage: 0,
         avatar: 'http://via.placeholder.com/80x80'
       }
     };
+  }
+
+
+  componentWillMount() {
+
+    axios
+      .get(`/api/competition/${this.props.competition}`)
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          competition: res.data,
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    //load all the competitors for this competition
+    axios
+      .get(`/api/competition/${this.props.competition}/competitor/${this.props.competitor}`)
+      .then(res => {
+        console.log(res.data);
+
+        let data = res.data;
+
+        data.points = Math.round(data.elo.elo);
+        data.games = 123;
+        data.winPercentage = 64;
+        data.avatar ='http://via.placeholder.com/80x80';
+
+        this.setState({player: data});
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   render() {
@@ -36,7 +73,7 @@ export default class Competitor extends Component {
         <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title d-flex align-items-center">
-              {this.state.competitionName}
+              {this.state.competition.name}
             </h4>
             <p>{this.state.player.points} points (2nd)</p>
             <p>
