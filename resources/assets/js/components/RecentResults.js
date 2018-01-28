@@ -1,15 +1,11 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
 
-import CreateCompetition from './CreateCompetition';
 
 export default class RecentResults extends Component {
   constructor(props) {
     super(props);
 
-    debugger;
     this.state = {
       competitionId: props.competition,
       games: [],
