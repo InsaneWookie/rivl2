@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Competition;
+use App\CompetitorElo;
 use App\Game;
+use App\Libraries\EloCalculator;
 use App\Score;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GameController extends Controller
 {
@@ -17,17 +20,7 @@ class GameController extends Controller
      */
     public function index(Competition $competition)
     {
-        return response(Game::where('competition_id', $competition->id)->get());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response($competition->games->load('scores'));
     }
 
     /**
@@ -39,33 +32,76 @@ class GameController extends Controller
      */
     public function store(Request $request, Competition $competition)
     {
-     //   return response(var_export($request->json()->all(), true));
-
         $newGame = $request->json()->all();
 
         $gameScores = $newGame['scores'];
-
         unset($newGame['scores']);
 
-        $newGame['competition_id'] = $competition->id;
-        $gameModel = Game::create($newGame);
+        $response = null;
+
+        DB::transaction(function() use ($competition, $gameScores, &$response){
+
+            $newGame['competition_id'] = $competition->id;
+            $gameModel = Game::create($newGame);
+
+            //convert to score models
+            $scoreModels = [];
+            foreach ($gameScores as $score) {
+                $score['game_id'] = $gameModel->id;
+
+                $scoreModel = new Score();
+                $scoreModel->fill($score);
+                $scoreModels[] = $scoreModel;
+            }
+
+            $player1Elo = CompetitorElo::where(['competitor_id' => $scoreModels[0]['competitor_id'], 'competition_id' => $competition->id])->first();
+            $player2Elo = CompetitorElo::where(['competitor_id' => $scoreModels[1]['competitor_id'], 'competition_id' => $competition->id])->first();
+
+            $newElo = EloCalculator::getElo($player1Elo, $player2Elo, $this->getWinnerId($scoreModels));
+
+            $scoreModels[0]->elo_before = $player1Elo->elo;
+            $scoreModels[0]->elo_after = $newElo['player1Elo'];
+
+            $scoreModels[1]->elo_before = $player2Elo->elo;
+            $scoreModels[1]->elo_after = $newElo['player2Elo'];
+
+            foreach($scoreModels as $scoreModel){
+                $scoreModel->save();
+            }
+
+            $player1Elo->elo = $newElo['player1Elo'];
+            $player2Elo->elo = $newElo['player2Elo'];
+
+            $player1Elo->save();
+            $player2Elo->save();
+
+            $response = response(Game::where('id', $gameModel->id)->with('scores')->first());
+
+        });
 
 
-        foreach($gameScores as $score){
-            $score['game_id'] = $gameModel->id;
+        return $response;
 
-            Score::create($score);
-
-        }
-
-        return response(Game::where('id', $gameModel->id)->with('scores')->get());
 
     }
+
+    private function getWinnerId($scores){
+
+        foreach ($scores as $score) {
+            if($score->rank === 1){
+                return $score->competitor_id;
+            }
+        }
+
+        throw new \Exception("Couldn't find winner");
+    }
+
+
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Game  $game
+     * @param  \App\Game $game
      * @return \Illuminate\Http\Response
      */
     public function show(Competition $competition, Game $game)
@@ -73,22 +109,12 @@ class GameController extends Controller
         return response($game);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Game  $game
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Game $game)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Game  $game
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Game $game
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Game $game)
@@ -99,7 +125,7 @@ class GameController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Game  $game
+     * @param  \App\Game $game
      * @return \Illuminate\Http\Response
      */
     public function destroy(Game $game)
