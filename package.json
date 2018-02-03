@@ -22,7 +22,8 @@
     "vuex": "^3.0.0"
   },
   "dependencies": {
-    "bootstrap": "^4.0.0-beta.2",
+    "bootstrap": "^4.0.0",
+    "popper.js": "^1.12.9",
     "react-router-dom": "^4.2.2"
   }
 }

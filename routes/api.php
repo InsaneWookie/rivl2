@@ -17,9 +17,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('competitor/{id}/avatar', 'CompetitorController@avatar');
+
 Route::resource('competitor', 'CompetitorController');
 Route::resource('competition', 'CompetitionController');
 //Route::resource('game', 'GameController');
 
 Route::resource('competition.game', 'GameController');
 Route::resource('competition.competitor', 'CompetitorController');
+
+

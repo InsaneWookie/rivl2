@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import FileUploadModal from "./FileUploadModal";
 
 export default class Competitor extends Component {
   constructor(props) {
@@ -15,9 +16,12 @@ export default class Competitor extends Component {
         points: 0,
         games: 0,
         winPercentage: 0,
-        avatar: 'http://via.placeholder.com/80x80'
+        avatar_image: 'http://via.placeholder.com/80x80'
       }
     };
+
+    this.showFileUploadModal = this.showFileUploadModal.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
   }
 
 
@@ -46,7 +50,10 @@ export default class Competitor extends Component {
         data.points = Math.round(data.elo.elo);
         data.games = 123;
         data.winPercentage = 64;
-        data.avatar ='http://via.placeholder.com/80x80';
+        if(!data.avatar_image){
+          data.avatar_image ='http://via.placeholder.com/80x80';
+        }
+
 
         this.setState({player: data});
       })
@@ -55,17 +62,35 @@ export default class Competitor extends Component {
       });
   }
 
+  uploadFile(form){
+
+    let fd = new FormData(form);
+   // fd.append('avatar', this.fileInput);
+    const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+    return axios.post(`/api/competitor/${this.state.player.id}/avatar`, fd, config).then((res) => {
+      console.log(res);
+    })
+  }
+
+  showFileUploadModal(e){
+    e.preventDefault();
+  }
+
+
   render() {
     return (
       <div>
         <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title d-flex align-items-center mb-0">
-              <img
-                src={this.state.player.avatar}
-                alt={`${this.state.player.name}'s avatar'`}
-                className="avatar mr-4"
-              />
+              <a href='#' onClick={this.showFileUploadModal} data-toggle="modal" data-target="#fileUploadModal">
+                <img
+                  src={this.state.player.avatar_image}
+                  alt={`${this.state.player.name}'s avatar'`}
+                  className="avatar mr-4"
+                  style={{maxWidth: '80px'}}
+                />
+              </a>
               {this.state.player.name}
             </h4>
           </div>
@@ -102,6 +127,7 @@ export default class Competitor extends Component {
             </li>
           </ul>
         </div>
+        <FileUploadModal uploadFile={this.uploadFile}/>
       </div>
     );
   }

@@ -6,6 +6,7 @@ use App\Competition;
 use App\Competitor;
 use App\CompetitorElo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CompetitorController extends Controller
 {
@@ -92,5 +93,30 @@ class CompetitorController extends Controller
     public function destroy(Competitor $competitor)
     {
         //
+    }
+
+    /**
+     * @param Request $request
+     * @param integer $competitorId
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+
+     */
+    public function avatar(Request $request, $competitorId)
+    {
+        $file = $request->file('avatar');
+
+
+//        $storeName = md5($file->getFilename());
+
+        $filePathStore = $file->storePublicly('public');
+
+
+        $comp = Competitor::findOrFail($competitorId);
+        $comp->avatar_image = Storage::url($filePathStore);
+        $comp->save();
+
+        return response($comp);
+//        return response(asset(Storage::url($filePathStore)));
+
     }
 }

@@ -164,7 +164,7 @@ export default class Competition extends Component {
                 <Link to={`/competition/${this.props.competition}/competitor/${competitor.id}`}>
                   <img
                     className="avatar avatar-r avatar-sm mr-3"
-                    src="http://via.placeholder.com/80x80"
+                    src={competitor.avatar_image}
                   />
                 </Link>
                 <div className="name">

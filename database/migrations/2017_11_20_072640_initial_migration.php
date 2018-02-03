@@ -27,6 +27,7 @@ class InitialMigration extends Migration
             $table->string('email', 128);
             $table->string('status', 20)->default('active');
             $table->string('challonge_username', 128)->nullable();
+            $table->string('avatar_image', 128)->nullable();
             $table->timestamps();
         });
 
