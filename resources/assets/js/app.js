@@ -12,9 +12,9 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+require('./components/Navbar');
 require('./components/Layout');
 require('./components/CreateCompetition');
 require('./components/Competitions');
 require('./components/Competitor');
 require('./components/EnterGames');
-require('./components/Navbar');

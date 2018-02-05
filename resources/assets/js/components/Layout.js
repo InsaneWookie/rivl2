@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, matchPath  } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -11,8 +11,8 @@ import EnterGames from './EnterGames';
 import Competitor from './Competitor';
 
 export default class Layout extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       competitions: [],
       selectedCompetition: null
@@ -27,7 +27,6 @@ export default class Layout extends Component {
   }
 
   getCompetition(competitionId){
-    debugger;
     return this.state.competitions.find((c) => c.id = competitionId)
   }
 
@@ -41,11 +40,23 @@ export default class Layout extends Component {
     });
   }
 
-
-
   componentWillMount() {
     axios.get(`/api/competition`).then(res => {
-      this.setState({ competitions: res.data });
+      //must be a better way than this
+      let match = matchPath(location.pathname,  {
+        path: '/competition/:id',
+        exact: false,
+        strict: false
+      });
+      let selectedComp = null;
+      if(match && match.path){
+        selectedComp =  res.data.find((c) => c.id = parseInt(match.params.id));
+      }
+
+      this.setState({
+        competitions: res.data,
+        selectedCompetition: selectedComp
+      });
     });
   }
 
@@ -53,31 +64,25 @@ export default class Layout extends Component {
     return (
       <Router>
         <div>
-          <Navbar />
-          <div className="container">
-            <div className="alert alert-info">
-              TEST LINKS:<br />
-              <Link to="/competitions" onClick={() => this.setCompetition(null)}>Competitions</Link>
-              |
-              {this.state.selectedCompetition && <Link to={`/competition/${this.state.selectedCompetition.id}/enter-scores`}>Enter Games</Link>}
-            </div>
 
+          <div className="container">
+            <Navbar selectedCompetition={this.state.selectedCompetition} setCompetition={this.setCompetition} />
             <Switch>
               <Route exact
-                path="/competitions"
-                render={() => <Competitions competitions={this.state.competitions} setCompetition={this.setCompetition} createCompetition={this.createCompetition} />}
+                     path="/competitions"
+                     render={() => <Competitions competitions={this.state.competitions} setCompetition={this.setCompetition} createCompetition={this.createCompetition} />}
               />
               <Route exact
-                path="/competition/:id"
-                render={(routeProps) => <Competition competition={routeProps.match.params.id} />}
+                     path="/competition/:id"
+                     render={(routeProps) => <Competition competition={routeProps.match.params.id} />}
               />
               <Route exact
-                path="/competition/:competitionId/enter-scores"
-                render={(routeProps) => <EnterGames competitionId={routeProps.match.params.competitionId}/>}
+                     path="/competition/:competitionId/enter-scores"
+                     render={(routeProps) => <EnterGames competitionId={routeProps.match.params.competitionId}/>}
               />
               <Route exact
-                path="/competition/:competitionId/competitor/:id"
-                render={(routeProps) => <Competitor competition={routeProps.match.params.competitionId} competitor={routeProps.match.params.id}/>}
+                     path="/competition/:competitionId/competitor/:id"
+                     render={(routeProps) => <Competitor competition={routeProps.match.params.competitionId} competitor={routeProps.match.params.id}/>}
               />
             </Switch>
           </div>

@@ -20,7 +20,7 @@ export default class Competitions extends Component {
           </div>
           <ul className="list-group list-group-flush">
             {this.props.competitions.map((item, index) => (
-              <li className="list-group-item" key={index}>
+              <li className="list-group-item" key={item.id}>
                 <Link to={`/competition/${item.id}`} onClick={() => this.props.setCompetition(item)}>{item.name}</Link>
               </li>
             ))}
