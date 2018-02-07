@@ -9,6 +9,7 @@ export default class Competitor extends Component {
 
     this.state = {
       competition: {},
+      playerStats: {},
 
       player: {
         id: 0,
@@ -60,6 +61,14 @@ export default class Competitor extends Component {
       .catch(error => {
         console.log(error);
       });
+
+    axios
+      .get(`/api/competition/${this.props.competition}/competitor/${this.props.competitor}/stats`)
+      .then(res => {
+        let stats = res.data;
+        stats.winPercentage = stats.games_played === 0 ? 0 : Math.round(stats.wins/stats.games_played * 100);
+        this.setState({playerStats: stats});
+      });
   }
 
   uploadFile(form){
@@ -98,35 +107,18 @@ export default class Competitor extends Component {
         <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title d-flex align-items-center">
-              {this.state.competition.name}
+              {this.state.competition.name} ({this.state.player.points}pts)
             </h4>
-            <p>{this.state.player.points} points (2nd)</p>
             <p>
-              {this.state.player.games} games ({this.state.player.winPercentage}%
-              wins)
-            </p>
-            <p>
-              Main rivl: <a href="#">Some guy</a>
+              {this.state.playerStats.games_played} games ({this.state.playerStats.winPercentage}% wins)
             </p>
             <p>
               <strong>Recent games</strong>
             </p>
-            graph here
+            Coming soon
           </div>
         </div>
-        {/* IF has played other sports: */}
-        <div className="card main-card mb-4">
-          <div className="card-body">
-            <h4 className="card-title d-flex align-items-center">
-              Other stats
-            </h4>
-          </div>
-          <ul className="list-group list-group-flush">
-            <li className="list-group-item">
-              <a href="#">Some other sport</a>
-            </li>
-          </ul>
-        </div>
+
         <FileUploadModal uploadFile={this.uploadFile}/>
       </div>
     );

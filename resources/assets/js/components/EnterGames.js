@@ -47,8 +47,9 @@ export default class EnterGames extends Component {
     axios
       .get(`/api/competition/${this.state.competitionId}/competitor`)
       .then(res => {
+        let comp = _.sortBy(res.data, 'name');
         this.setState({
-          competitors: res.data,
+          competitors: comp,
           isLoading: false
         });
       })
@@ -192,7 +193,7 @@ export default class EnterGames extends Component {
               <label htmlFor="player-1">Player 1</label>
               <select className="form-control" name="player-1" id="player-1"
                       value={this.state.selectedPlayer1Id} onChange={this.handlePlayer1Change}>
-                <option value="">Dropdowns suck</option>
+                <option value=""></option>
                 {this.state.isLoading === true && <option>Loading...</option>}
                 {this.state.competitors.map(competitor => (
                   <option value={competitor.id} key={competitor.id}>
@@ -206,7 +207,7 @@ export default class EnterGames extends Component {
               <label htmlFor="player-2">Player 2</label>
               <select className="form-control" name="player-2" id="player-2"
                       value={this.state.selectedPlayer2Id} onChange={this.handlePlayer2Change}>
-                <option value="">Dropdowns suck</option>
+                <option value=""></option>
                 {this.state.isLoading === true && <option>Loading...</option>}
                 {this.state.competitors.map(competitor => (
                   <option value={competitor.id} key={competitor.id}>

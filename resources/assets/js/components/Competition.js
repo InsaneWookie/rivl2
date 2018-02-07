@@ -54,7 +54,7 @@ export default class Competition extends Component {
 
     return _.orderBy(competitors, [(comp) => {
       return comp.elo.elo;
-    }], ['desc']);
+    }], ['desc']).filter((c) => c.status === 'active');
   }
 
   setCompetitorRank(competitors) {
@@ -81,11 +81,16 @@ export default class Competition extends Component {
   convertGamesToUIStructure(games, competitors) {
 
     //we want the player and the number of games they won
-    //to get this we group the games by date
+    //to get this we group the games by date (date isn't perfect as they can hit a second boundary)
     //and reduce the scores down to a count
 
-    //first group the games by date
+    //first sort by date desc (newest first)
+    games = _.orderBy(games, [(g) => {
+      return g.created_at;
+    }], ['desc']);
 
+
+    //group the games by date
     let groupedGames = {};
     games.forEach((g) => {
 

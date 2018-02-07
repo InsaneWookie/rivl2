@@ -6,6 +6,7 @@ use App\Competition;
 use App\Competitor;
 use App\CompetitorElo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CompetitorController extends Controller
@@ -119,4 +120,37 @@ class CompetitorController extends Controller
 //        return response(asset(Storage::url($filePathStore)));
 
     }
+
+    /**
+     * @param Competition $competition
+     * @param Competitor $competitor
+     * @return \Illuminate\Http\Response
+     */
+    public function stats(Competition $competition, Competitor $competitor)
+    {
+
+        //structure
+        $stats = [
+          'games_played' => 0,
+          'wins' => 0,
+          'losses' => 0,
+        ];
+
+        //TODO: use the orm or query builder
+        $stats = DB::select('
+            SELECT count(1) as games_played,
+              CAST(sum(CASE WHEN s.rank = 1 THEN 1 ELSE 0 END) AS UNSIGNED) as wins,
+              CAST(sum(CASE WHEN s.rank > 1 THEN 1 ELSE 0 END) AS UNSIGNED) as losses
+            FROM game g
+            JOIN score s ON g.id = s.game_id
+            WHERE
+              g.competition_id = ?
+              AND s.competitor_id = ?', [$competition->id, $competitor->id]);
+
+        return response(json_encode($stats[0]));
+
+
+    }
+
+
 }

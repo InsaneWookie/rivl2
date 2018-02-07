@@ -14,7 +14,7 @@ use App\CompetitorElo;
 class EloCalculator
 {
 
-    public static function getElo(CompetitorElo $competitor1Elo, CompetitorElo $competitor2Elo, $winnerId)
+    public static function getElo(CompetitorElo $competitor1Elo, CompetitorElo $competitor2Elo, int $winnerId)
     {
         $kFactor = 32;
 
@@ -24,19 +24,17 @@ class EloCalculator
         $rating1 = 10 ** ($p1Elo / 400);
         $rating2 = 10 ** ($p2Elo / 400);
 
-
-        //Onto the expected score for each player:
-
         $expected1 = $rating1 / ($rating1 + $rating2);
         $expected2 = $rating2 / ($rating1 + $rating2);
-
 
         if($winnerId === $competitor1Elo->competitor_id){
             $newRating1 = $p1Elo + $kFactor * (1 - $expected1);
             $newRating2 = $p2Elo + $kFactor * (0 - $expected2);
-        } else {
+        } else if($winnerId === $competitor2Elo->competitor_id){
             $newRating1 = $p1Elo + $kFactor * (0 - $expected1);
             $newRating2 = $p2Elo + $kFactor * (1 - $expected2);
+        } else {
+            throw new \Exception("Winner id does not match either competitor");
         }
 
         return [

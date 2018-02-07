@@ -24,7 +24,7 @@ class InitialMigration extends Migration
         Schema::create('competitor', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 128);
-            $table->string('email', 128);
+            $table->string('email', 128)->nullable();
             $table->string('status', 20)->default('active');
             $table->string('challonge_username', 128)->nullable();
             $table->string('avatar_image', 128)->nullable();

@@ -20,7 +20,15 @@ class GameController extends Controller
      */
     public function index(Competition $competition)
     {
-        return response($competition->games->load('scores'));
+        //todo: proper paging
+//        return response(Game::where('competition_id', $competition->id)
+//            ->orderBy('created_at', 'desc')->simplePaginate(15));
+
+        $games = Game::with('scores')->where('competition_id', $competition->id)->orderBy('created_at', 'desc')
+            ->limit(50)->get();
+
+        return response($games);
+        //return response($competition->games->load('scores'));
     }
 
     /**
@@ -57,7 +65,7 @@ class GameController extends Controller
             $player1Elo = CompetitorElo::where(['competitor_id' => $scoreModels[0]['competitor_id'], 'competition_id' => $competition->id])->first();
             $player2Elo = CompetitorElo::where(['competitor_id' => $scoreModels[1]['competitor_id'], 'competition_id' => $competition->id])->first();
 
-            $newElo = EloCalculator::getElo($player1Elo, $player2Elo, $this->getWinnerId($scoreModels));
+            $newElo = EloCalculator::getElo($player1Elo, $player2Elo, (int)$this->getWinnerId($scoreModels));
 
             $scoreModels[0]->elo_before = $player1Elo->elo;
             $scoreModels[0]->elo_after = $newElo['player1Elo'];

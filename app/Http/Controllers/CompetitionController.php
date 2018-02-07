@@ -48,7 +48,7 @@ class CompetitionController extends Controller
      */
     public function show(Competition $competition)
     {
-        $competition->load('games');
+        //$competition->load('games');
         return response($competition);
         //return response(Competition::where('id', $competition->id)->with('games')->get());
     }
