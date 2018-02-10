@@ -53,7 +53,7 @@ export default class Competition extends Component {
   sortCompetitors(competitors) {
 
     return _.orderBy(competitors, [(comp) => {
-      return comp.elo.elo;
+      return parseFloat(comp.elo.elo);
     }], ['desc']).filter((c) => c.status === 'active');
   }
 

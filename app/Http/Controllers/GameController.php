@@ -42,14 +42,15 @@ class GameController extends Controller
     {
         $newGame = $request->json()->all();
 
+        $newGame['competition_id'] = $competition->id;
+
         $gameScores = $newGame['scores'];
         unset($newGame['scores']);
 
         $response = null;
 
-        DB::transaction(function() use ($competition, $gameScores, &$response){
+        DB::transaction(function() use ($competition, $newGame, $gameScores, &$response){
 
-            $newGame['competition_id'] = $competition->id;
             $gameModel = Game::create($newGame);
 
             //convert to score models
@@ -62,47 +63,16 @@ class GameController extends Controller
                 $scoreModels[] = $scoreModel;
             }
 
-            $player1Elo = CompetitorElo::where(['competitor_id' => $scoreModels[0]['competitor_id'], 'competition_id' => $competition->id])->first();
-            $player2Elo = CompetitorElo::where(['competitor_id' => $scoreModels[1]['competitor_id'], 'competition_id' => $competition->id])->first();
-
-            $newElo = EloCalculator::getElo($player1Elo, $player2Elo, (int)$this->getWinnerId($scoreModels));
-
-            $scoreModels[0]->elo_before = $player1Elo->elo;
-            $scoreModels[0]->elo_after = $newElo['player1Elo'];
-
-            $scoreModels[1]->elo_before = $player2Elo->elo;
-            $scoreModels[1]->elo_after = $newElo['player2Elo'];
-
-            foreach($scoreModels as $scoreModel){
-                $scoreModel->save();
-            }
-
-            $player1Elo->elo = $newElo['player1Elo'];
-            $player2Elo->elo = $newElo['player2Elo'];
-
-            $player1Elo->save();
-            $player2Elo->save();
+            $gameLib = new \GameLibrary();
+            $gameLib->updateElo($competition, $scoreModels);
 
             $response = response(Game::where('id', $gameModel->id)->with('scores')->first());
-
         });
 
-
         return $response;
-
-
     }
 
-    private function getWinnerId($scores){
 
-        foreach ($scores as $score) {
-            if($score->rank === 1){
-                return $score->competitor_id;
-            }
-        }
-
-        throw new \Exception("Couldn't find winner");
-    }
 
 
 
