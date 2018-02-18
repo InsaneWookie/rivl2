@@ -6,7 +6,9 @@ use App\Competition;
 use App\CompetitorElo;
 use App\Game;
 use App\Libraries\EloCalculator;
+use App\Libraries\GameLibrary;
 use App\Score;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -63,8 +65,8 @@ class GameController extends Controller
                 $scoreModels[] = $scoreModel;
             }
 
-            $gameLib = new \GameLibrary();
-            $gameLib->updateElo($competition, $scoreModels);
+            $gameLib = new GameLibrary();
+            $gameLib->updateElo($competition, new Collection($scoreModels));
 
             $response = response(Game::where('id', $gameModel->id)->with('scores')->first());
         });

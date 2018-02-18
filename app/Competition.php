@@ -16,7 +16,7 @@ class Competition extends Model
         return $this->belongsToMany('App\Competitor', 'competitor_elo')
             ->as('elo') //renames the pivot key
             ->using('App\CompetitorElo') //says we want to use a model, not sure how this helps at the moment
-            ->withPivot('elo'); //add columns to the pivot element when querying
+            ->withPivot(['elo', 'status', 'pseudonym']); //add columns to the pivot element when querying
     }
 
 

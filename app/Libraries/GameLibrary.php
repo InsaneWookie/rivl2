@@ -85,12 +85,12 @@ class GameLibrary
     public function calculateNewPlayerElo(Competition $competition, Collection &$elos, Collection $scoreModels)
     {
         $player1Elo = $elos->first(function ($elo, $key) use ($scoreModels, $competition) {
-            return $elo->competitor_id === $scoreModels[0]->competitor_id && $elo->competition_id === $competition->id;
+            return $elo->competitor_id == $scoreModels[0]->competitor_id && $elo->competition_id == $competition->id;
         });
 
 
         $player2Elo = $elos->first(function ($elo, $key) use ($scoreModels, $competition) {
-            return $elo->competitor_id === $scoreModels[1]->competitor_id && $elo->competition_id === $competition->id;
+            return $elo->competitor_id == $scoreModels[1]->competitor_id && $elo->competition_id == $competition->id;
         });
 
 

@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('competitor/{id}/avatar', 'CompetitorController@avatar');
-Route::get('competition/{competition}/competitor/{competitor}/stats', 'CompetitorController@stats');
+Route::get('competition/{competition}/competitor_stats/{competitor?}', 'CompetitorController@stats');
 Route::get('admin/recalculate_elo/{competition}', 'AdminController@recalculate_elo');
 
 Route::resource('competitor', 'CompetitorController');

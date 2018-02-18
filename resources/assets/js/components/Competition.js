@@ -23,30 +23,35 @@ export default class Competition extends Component {
   }
 
   componentWillMount() {
-    axios
-      .get(`/api/competition/${this.props.competition}/competitor`)
-      .then(res => {
+    let requests = [
+      axios.get(`/api/competition/${this.props.competition}/competitor`),
+      axios.get(`/api/competition/${this.props.competition}/competitor_stats`),
+      axios.get(`/api/competition/${this.props.competition}/game`)
+    ];
 
-        let comp = res.data;
+    Promise.all(requests).then(results => {
 
-        axios
-          .get(`/api/competition/${this.props.competition}/game`)
-          .then(res => {
+      let competitors = results[0].data;
+      let stats = results[1].data;
+      let games = results[2].data;
 
-            this.setState({
-              convertedGames: this.convertGamesToUIStructure(res.data, comp),
-              competitors: this.setCompetitorRank(this.sortCompetitors(comp)),
-              isLoading: false
-            });
-
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      })
-      .catch(error => {
-        console.log(error);
+      //populate the competior stats info
+      competitors.forEach(comp => {
+        let stat = _.find(stats, {'competitor_id': comp.id});
+        if(!stat){
+          stat = { competitor_id: comp.id, wins: 0, losses: 0, games_played: 0}
+        }
+        stat.winPercentage = stat.games_played === 0 ? 0 : Math.round(stat.wins / stat.games_played * 100);
+        comp.stats = stat;
       });
+
+      console.log(competitors);
+      this.setState({
+        convertedGames: this.convertGamesToUIStructure(games, competitors),
+        competitors: this.setCompetitorRank(this.sortCompetitors(competitors)),
+        isLoading: false
+      });
+    })
   }
 
 
@@ -54,7 +59,7 @@ export default class Competition extends Component {
 
     return _.orderBy(competitors, [(comp) => {
       return parseFloat(comp.elo.elo);
-    }], ['desc']).filter((c) => c.status === 'active');
+    }], ['desc']).filter((c) => c.elo.status === 'active');
   }
 
   setCompetitorRank(competitors) {
@@ -185,12 +190,16 @@ export default class Competition extends Component {
                     src={competitor.avatar_image}
                   />
                 </Link>
-                <div className="name">
+                <div className="name mr-3">
                   <Link
                     to={`/competition/${this.props.competition}/competitor/${competitor.id}`}>{competitor.name}</Link>
+
+                </div>
+                <div className="points mr-3">
+                  {Math.round(competitor.elo.elo)}
                 </div>
                 <div className="points ml-auto">
-                  {Math.round(competitor.elo.elo)}
+                   (Wins: {competitor.stats.wins}@{competitor.stats.winPercentage}%)
                 </div>
               </li>
             ))}

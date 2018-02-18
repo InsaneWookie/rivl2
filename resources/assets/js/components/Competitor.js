@@ -8,7 +8,7 @@ export default class Competitor extends Component {
     super(props);
 
     this.state = {
-      competition: {},
+      //competition: props.competition,
       playerStats: {},
 
       player: {
@@ -16,6 +16,9 @@ export default class Competitor extends Component {
         name: '',
         points: 0,
         games: 0,
+        elo: {
+          status: 'inactive'
+        },
         winPercentage: 0,
         avatar_image: 'http://via.placeholder.com/80x80'
       }
@@ -23,29 +26,20 @@ export default class Competitor extends Component {
 
     this.showFileUploadModal = this.showFileUploadModal.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
+    this.handleStatusCheckbox = this.handleStatusCheckbox.bind(this);
   }
-
 
   componentWillMount() {
 
-    axios
-      .get(`/api/competition/${this.props.competition}`)
-      .then(res => {
-        console.log(res.data);
-        this.setState({
-          competition: res.data,
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    // axios
+    //   .get(`/api/competition/${this.props.competition.id}`)
+    //   .then(res => {
+    //     this.setState({competition: res.data});
+    //   });
 
-    //load all the competitors for this competition
     axios
-      .get(`/api/competition/${this.props.competition}/competitor/${this.props.competitor}`)
+      .get(`/api/competition/${this.props.competition.id}/competitor/${this.props.competitor}`)
       .then(res => {
-        console.log(res.data);
-
         let data = res.data;
 
         data.points = Math.round(data.elo.elo);
@@ -54,21 +48,18 @@ export default class Competitor extends Component {
         if(!data.avatar_image){
           data.avatar_image ='http://via.placeholder.com/80x80';
         }
-
-
         this.setState({player: data});
-      })
-      .catch(error => {
-        console.log(error);
       });
 
     axios
-      .get(`/api/competition/${this.props.competition}/competitor/${this.props.competitor}/stats`)
+      .get(`/api/competition/${this.props.competition.id}/competitor_stats/${this.props.competitor}`)
       .then(res => {
         let stats = res.data;
         stats.winPercentage = stats.games_played === 0 ? 0 : Math.round(stats.wins/stats.games_played * 100);
         this.setState({playerStats: stats});
       });
+
+
   }
 
   uploadFile(form){
@@ -85,6 +76,28 @@ export default class Competitor extends Component {
     e.preventDefault();
   }
 
+  handleStatusCheckbox(e){
+    //invert status (should this be using previous state?)
+    let status = this.state.player.elo.status === 'active' ? 'inactive' : 'active';
+
+    //am I allowed to do this state update here and in the ajax callback? (no race conditions?)
+    this.setState({player: {...this.state.player,  elo: {...this.state.player.elo, status: status}}});
+
+    let competitor = {
+      elo: {
+        ...this.state.player.elo,
+        status: status
+      }
+    };
+
+    //this is a little funky, it doesn't update the checkbox until the request comes back
+    axios
+      .put(`/api/competition/${this.props.competition}/competitor/${this.props.competitor}`, competitor)
+      .then(res => {
+        //this feels crazy
+        this.setState({player: {...this.state.player,  elo: {...this.state.player.elo, status: status}}});
+      });
+  }
 
   render() {
     return (
@@ -107,11 +120,18 @@ export default class Competitor extends Component {
         <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title d-flex align-items-center">
-              {this.state.competition.name} ({this.state.player.points}pts)
+              {this.props.competition.name} ({this.state.player.points}pts)
             </h4>
             <p>
               {this.state.playerStats.games_played} games ({this.state.playerStats.winPercentage}% wins)
+              <br />
             </p>
+            <div className="custom-control custom-checkbox">
+              <input type="checkbox" name="status" className="custom-control-input" id="player_status" checked={this.state.player.elo.status === 'active'}
+                     onChange={this.handleStatusCheckbox} />
+              <label className="custom-control-label" htmlFor="player_status">Active</label>
+            </div>
+            <br />
             <p>
               <strong>Recent games</strong>
             </p>

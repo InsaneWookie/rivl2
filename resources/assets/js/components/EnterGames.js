@@ -3,6 +3,8 @@ import axios from 'axios';
 import EnterGameRow from './EnterGameRow';
 
 import GameController from '../controllers/GameController';
+import SubmitButton from "./SubmitButton";
+import EnterGameResult from "./EnterGameResult";
 
 export default class EnterGames extends Component {
   constructor(props) {
@@ -21,9 +23,7 @@ export default class EnterGames extends Component {
       //e.g. 1:1, 2:1, 3:2, 4:2
       //We always have at least one row.
       //0 means there is no winner set yet.
-      gameResults: {
-        1: 0
-      },
+      gameResults: {},
       scores: [
         // {competitor1_id: 1, competitor2_id: 2, winner: 1}
       ],
@@ -143,7 +143,46 @@ export default class EnterGames extends Component {
 
     });
 
-    Promise.all(requests).then(console.log);
+    return Promise.all(requests).then(res =>{
+      let games = res.map(r => r.data);
+
+      //clear out the current entered scores
+      this.setState({
+        scores: [],
+        gameResults: this.convertGames(games)
+      })
+
+      //need to convert the data to the ui format
+
+    });
+
+  }
+
+  convertGames(games){
+
+   // let convertedGames = [];
+    let newGame = {
+      left: { elo_change: 0},
+      right: { elo_change: 0},
+    };
+
+    games.forEach(g => {
+
+      g.scores.forEach(s => {
+
+        if(this.state.selectedPlayer1Id == s.competitor_id){
+          newGame.left.elo_change += (s.elo_after - s.elo_before);
+        } else {
+          newGame.right.elo_change += (s.elo_after - s.elo_before);
+        }
+
+      });
+
+     // convertedGames.push(newGame);
+    });
+
+    console.log(newGame);
+    return newGame;
 
   }
 
@@ -229,9 +268,6 @@ export default class EnterGames extends Component {
               >
                 -
               </button>
-              {/*<span className="input-group-addon bg-light">*/}
-              {/*{Object.keys(this.state.gameResults).length}*/}
-              {/*</span>*/}
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -251,16 +287,17 @@ export default class EnterGames extends Component {
                 game={index}
               />
             ))}
+
+            <EnterGameResult leftId={this.state.selectedPlayer1Id} games={this.state.gameResults} />
           </div>
 
           <div className="text-center mt-4">
-            <button
-              className="btn btn-success btn-block btn-inline-sm"
+            <SubmitButton
               disabled={!this.state.allEntered}
               onClick={this.submitScores}
             >
               Submit
-            </button>
+            </SubmitButton>
           </div>
         </div>
       </div>

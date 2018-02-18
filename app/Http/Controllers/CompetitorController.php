@@ -23,16 +23,6 @@ class CompetitorController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -63,26 +53,33 @@ class CompetitorController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Competitor  $competitor
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Competitor $competitor)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Competitor  $competitor
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Competition $competition
+     * @param  \App\Competitor $competitor
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Competitor $competitor)
+    public function update(Request $request, Competition $competition, Competitor $competitor)
     {
-        //
+        $updateData = $request->json()->all();
+
+        //TODO: actual competitor save
+
+        //want to pull out the elo part
+
+        $competitorEloData = isset($updateData['elo']) ? $updateData['elo'] : null;
+
+        if($competitorEloData !== null){
+            //don't allow them to move the competitor around (the can probably be handled by the guarded prop on the model)
+            unset($competitorEloData['competitor_id']);
+            unset($competitorEloData['competition_id']);
+
+            $competitor->competitions()->updateExistingPivot($competition->id, $competitorEloData);
+        }
+
+        return response($competition->competitors->find($competitor->id));
+
     }
 
     /**
@@ -126,7 +123,7 @@ class CompetitorController extends Controller
      * @param Competitor $competitor
      * @return \Illuminate\Http\Response
      */
-    public function stats(Competition $competition, Competitor $competitor)
+    public function stats(Competition $competition, Competitor $competitor = null)
     {
 
         //structure
@@ -136,18 +133,31 @@ class CompetitorController extends Controller
           'losses' => 0,
         ];
 
-        //TODO: use the orm or query builder
-        $stats = DB::select('
-            SELECT count(1) as games_played,
+        //var_export($competitor);
+
+        $query = "
+            SELECT s.competitor_id, 
+            count(1) as games_played,
               CAST(sum(CASE WHEN s.rank = 1 THEN 1 ELSE 0 END) AS UNSIGNED) as wins,
               CAST(sum(CASE WHEN s.rank > 1 THEN 1 ELSE 0 END) AS UNSIGNED) as losses
             FROM game g
             JOIN score s ON g.id = s.game_id
             WHERE
-              g.competition_id = ?
-              AND s.competitor_id = ?', [$competition->id, $competitor->id]);
+              g.competition_id = ?";
 
-        return response(json_encode($stats[0]));
+        $data = [$competition->id];
+        if($competitor != null){
+            $data[] = $competitor->id;
+            $query .= ' AND s.competitor_id = ? ';
+        }
+
+        $query .= ' GROUP BY s.competitor_id';
+
+
+        //TODO: use the orm or query builder
+        $stats = DB::select($query, $data);
+
+        return response(json_encode($competitor === null ? $stats : $stats[0]));
 
 
     }

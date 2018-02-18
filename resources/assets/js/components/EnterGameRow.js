@@ -19,7 +19,7 @@ const EnterGameRow = props => {
       </div>
 
       <div className="col-6 d-flex align-items-center justify-content-center">
-        <strong>Game {props.game}</strong>
+        <strong>Game {props.game + 1}</strong>
       </div>
 
       <div className="col-3 pl-0 text-right">
