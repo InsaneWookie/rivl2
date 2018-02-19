@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class CompetitorElo extends Pivot
 {
     protected $table = 'competitor_elo';
-    public $timestamps = true;
+    public $timestamps = false; //not sure how to update the timestamps
 
     protected $guarded = ['elo'];
 }

@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 Route::post('competitor/{id}/avatar', 'CompetitorController@avatar');
 Route::get('competition/{competition}/competitor_stats/{competitor?}', 'CompetitorController@stats');

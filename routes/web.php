@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/{any}', function () {
-    return view('home');
-})->where('any', '.*');;
+Route::get('/{any}', "HomeController@index")->where('any', '.*');;
 
 //Auth::routes();
 

@@ -92,7 +92,7 @@ export default class Competitor extends Component {
 
     //this is a little funky, it doesn't update the checkbox until the request comes back
     axios
-      .put(`/api/competition/${this.props.competition}/competitor/${this.props.competitor}`, competitor)
+      .put(`/api/competition/${this.props.competition.id}/competitor/${this.props.competitor}`, competitor)
       .then(res => {
         //this feels crazy
         this.setState({player: {...this.state.player,  elo: {...this.state.player.elo, status: status}}});
