@@ -10,4 +10,9 @@ class Score extends Model
     public $timestamps = true;
 
     protected $guarded = [];
+
+    public function game()
+    {
+        return $this->hasOne('App\Game');
+    }
 }

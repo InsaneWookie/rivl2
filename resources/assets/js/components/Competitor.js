@@ -3,9 +3,12 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import FileUploadModal from "./FileUploadModal";
 
+import {BarChart, Cell, Bar, XAxis, YAxis, ResponsiveContainer} from 'recharts';
+
 export default class Competitor extends Component {
   constructor(props) {
     super(props);
+
 
     this.state = {
       //competition: props.competition,
@@ -21,7 +24,10 @@ export default class Competitor extends Component {
         },
         winPercentage: 0,
         avatar_image: 'http://via.placeholder.com/80x80'
-      }
+      },
+      graph: [],
+      graphDomain: ['auto', 'auto']
+
     };
 
     this.showFileUploadModal = this.showFileUploadModal.bind(this);
@@ -31,20 +37,12 @@ export default class Competitor extends Component {
 
   componentWillMount() {
 
-    // axios
-    //   .get(`/api/competition/${this.props.competition.id}`)
-    //   .then(res => {
-    //     this.setState({competition: res.data});
-    //   });
-
     axios
       .get(`/api/competition/${this.props.competition.id}/competitor/${this.props.competitor}`)
       .then(res => {
         let data = res.data;
 
         data.points = Math.round(data.elo.elo);
-        data.games = 123;
-        data.winPercentage = 64;
         if(!data.avatar_image){
           data.avatar_image ='http://via.placeholder.com/80x80';
         }
@@ -59,7 +57,30 @@ export default class Competitor extends Component {
         this.setState({playerStats: stats});
       });
 
+    axios.get(`/api/competition/${this.props.competition.id}/competitor_graph_stats/${this.props.competitor}`)
+      .then(res => {
+        let graphData = this.convertGraphData(res.data);
+        let max = Math.abs(_.maxBy(graphData, (d) => {return Math.abs(d.y);}).y);
 
+        let domain = [max * -1, max] ;
+        this.setState({
+          graph: graphData,
+          graphDomain: domain
+        });
+      });
+
+
+  }
+
+  convertGraphData(responseData){
+    return responseData.map((score, index) => {
+      let eloChange = parseFloat((score.elo_after - score.elo_before).toFixed(2));
+      return {
+        y: eloChange,
+        x: index,
+        f: (eloChange < 0) ? '#8c1a00' : '#008a35'
+      }
+    })//.slice(0,10);
   }
 
   uploadFile(form){
@@ -135,7 +156,22 @@ export default class Competitor extends Component {
             <p>
               <strong>Recent games</strong>
             </p>
-            Coming soon
+            <div style={{height: 300}}>
+              <ResponsiveContainer>
+                <BarChart  data={this.state.graph}
+                           barGap={0} barCategoryGap={-1}>
+                  <XAxis dataKey="x" hide={true} />
+                  <YAxis domain={this.state.graphDomain}/>
+                  <Bar dataKey="y"  stroke-width="0" >
+                    {
+                      this.state.graph.map((entry, index) => {
+                        return <Cell key={index} fill={entry.f} />;
+                      })
+                    }
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 

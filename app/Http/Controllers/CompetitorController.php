@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Competition;
 use App\Competitor;
 use App\CompetitorElo;
+use App\Score;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -44,7 +45,7 @@ class CompetitorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Competitor  $competitor
+     * @param  \App\Competitor $competitor
      * @return \Illuminate\Http\Response
      */
     public function show(Competition $competition, Competitor $competitor)
@@ -70,7 +71,7 @@ class CompetitorController extends Controller
 
         $competitorEloData = isset($updateData['elo']) ? $updateData['elo'] : null;
 
-        if($competitorEloData !== null){
+        if ($competitorEloData !== null) {
             //don't allow them to move the competitor around (the can probably be handled by the guarded prop on the model)
             unset($competitorEloData['competitor_id']);
             unset($competitorEloData['competition_id']);
@@ -85,7 +86,7 @@ class CompetitorController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Competitor  $competitor
+     * @param  \App\Competitor $competitor
      * @return \Illuminate\Http\Response
      */
     public function destroy(Competitor $competitor)
@@ -97,7 +98,6 @@ class CompetitorController extends Controller
      * @param Request $request
      * @param integer $competitorId
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
-
      */
     public function avatar(Request $request, $competitorId)
     {
@@ -128,9 +128,9 @@ class CompetitorController extends Controller
 
         //structure
         $stats = [
-          'games_played' => 0,
-          'wins' => 0,
-          'losses' => 0,
+            'games_played' => 0,
+            'wins' => 0,
+            'losses' => 0,
         ];
 
         //var_export($competitor);
@@ -146,7 +146,7 @@ class CompetitorController extends Controller
               g.competition_id = ?";
 
         $data = [$competition->id];
-        if($competitor != null){
+        if ($competitor != null) {
             $data[] = $competitor->id;
             $query .= ' AND s.competitor_id = ? ';
         }
@@ -159,6 +159,31 @@ class CompetitorController extends Controller
 
         return response(json_encode($competitor === null ? $stats : $stats[0]));
 
+
+    }
+
+    public function graph_stats(Competition $competition, Competitor $competitor)
+    {
+
+//        $scores = Score::with(['game' => function ($query) use ($competition)  {
+//            $query->where('competition_id', $competition->id);
+//        }])->orderBy('created_at', 'desc')->limit(50)->get();
+
+        $query = "
+            SELECT s.*
+            FROM game g
+              JOIN score s ON g.id = s.game_id
+            
+            WHERE g.competition_id = :competition_id
+                  AND s.competitor_id = :competitor_id
+            ORDER BY s.created_at DESC
+            LIMIT 50;
+        ";
+
+        $scores = DB::select($query, ['competition_id' => $competition->id, 'competitor_id' => $competitor->id]);
+
+//        $scores = Score::query($query);
+        return response(json_encode($scores));
 
     }
 

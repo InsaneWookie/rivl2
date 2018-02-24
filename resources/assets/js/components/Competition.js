@@ -45,7 +45,6 @@ export default class Competition extends Component {
         comp.stats = stat;
       });
 
-      console.log(competitors);
       this.setState({
         convertedGames: this.convertGamesToUIStructure(games, competitors),
         competitors: this.setCompetitorRank(this.sortCompetitors(competitors)),
@@ -106,7 +105,6 @@ export default class Competition extends Component {
       groupedGames[g.created_at].push(g);
     });
 
-    console.log(groupedGames);
 
     let recentGames = [];
 
@@ -129,7 +127,6 @@ export default class Competition extends Component {
         }
       });
 
-      console.log(winCount);
 
       let players = Object.keys(winCount);
 
@@ -145,10 +142,6 @@ export default class Competition extends Component {
         player2: Object.assign({}, player2)
       })
     });
-
-
-    console.log(recentGames);
-
 
     return recentGames;
 

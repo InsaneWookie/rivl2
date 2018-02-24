@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Competition;
+use App\Competitor;
 use App\CompetitorElo;
 use App\Game;
 use App\Libraries\EloCalculator;
@@ -18,15 +19,29 @@ class GameController extends Controller
      * Display a listing of the resource.
      *
      * @param Competition $competition
+     * @param Competitor|null $competitor
      * @return \Illuminate\Http\Response
      */
-    public function index(Competition $competition)
+    public function index(Competition $competition, Competitor $competitor = null)
     {
         //todo: proper paging
 //        return response(Game::where('competition_id', $competition->id)
 //            ->orderBy('created_at', 'desc')->simplePaginate(15));
 
-        $games = Game::with('scores')->where('competition_id', $competition->id)->orderBy('created_at', 'desc')
+        $where = [];
+
+        if ($competitor !== null) {
+            $where['scores.competitor_id'] = $competitor->id;
+        }
+
+        $games = Game::with([
+            'scores' => function ($query) use ($competitor) {
+                if ($competitor !== null) {
+                    $query->where('competitor_id', $competitor->id); //this isn't quite right
+                }
+            }
+        ])->where('competition_id', $competition->id)
+            ->orderBy('created_at', 'desc')
             ->limit(50)->get();
 
         return response($games);
@@ -51,7 +66,7 @@ class GameController extends Controller
 
         $response = null;
 
-        DB::transaction(function() use ($competition, $newGame, $gameScores, &$response){
+        DB::transaction(function () use ($competition, $newGame, $gameScores, &$response) {
 
             $gameModel = Game::create($newGame);
 
@@ -73,9 +88,6 @@ class GameController extends Controller
 
         return $response;
     }
-
-
-
 
 
     /**

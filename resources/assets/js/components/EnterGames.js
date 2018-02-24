@@ -10,8 +10,6 @@ export default class EnterGames extends Component {
   constructor(props) {
     super(props);
 
-    console.log(props);
-
     this.state = {
       // competition: props.competition,
       competitionId: props.competitionId,
@@ -52,9 +50,6 @@ export default class EnterGames extends Component {
           competitors: comp,
           isLoading: false
         });
-      })
-      .catch(error => {
-        console.log(error);
       });
   }
 
@@ -181,7 +176,6 @@ export default class EnterGames extends Component {
      // convertedGames.push(newGame);
     });
 
-    console.log(newGame);
     return newGame;
 
   }
