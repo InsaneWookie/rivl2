@@ -4,6 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Competitor
+ * @package App
+ *
+ * @property int id
+ * @property string avatar_image
+ */
 class Competitor extends Model
 {
     protected $table = 'competitor';

@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 //});
 
 Route::post('competitor/{id}/avatar', 'CompetitorController@avatar');
+//Route::get('avatar', 'CompetitorController@avatar_get');
 Route::get('competition/{competition}/competitor_stats/{competitor?}', 'CompetitorController@stats');
 Route::get('competition/{competition}/competitor_graph_stats/{competitor}', 'CompetitorController@graph_stats');
 Route::get('admin/recalculate_elo/{competition}', 'AdminController@recalculate_elo');

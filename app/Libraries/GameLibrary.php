@@ -61,13 +61,17 @@ class GameLibrary
      public function updateElo(Competition $competition, Collection $scoreModels)
     {
         //TODO: turn this into a single query
+
+        //for the moment, we need to grab a lock on the competitor_elo rows
+        //as if multiple request come in at the same time they will all read the same
+        //value and all change the elo by the same amount
         $playerElos = new Collection([
             CompetitorElo::where([
                 'competitor_id' => $scoreModels[0]->competitor_id,
-                'competition_id' => $competition->id])->first(),
+                'competition_id' => $competition->id])->lockForUpdate()->first(),
             CompetitorElo::where([
                 'competitor_id' => $scoreModels[1]->competitor_id,
-                'competition_id' => $competition->id])->first()
+                'competition_id' => $competition->id])->lockForUpdate()->first()
         ]);
 
         $newPlayerElos = $this->calculateNewPlayerElo($competition, $playerElos, $scoreModels);

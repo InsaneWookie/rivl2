@@ -94,6 +94,13 @@ class CompetitorController extends Controller
         //
     }
 
+    public function avatar_get(Request $request)
+    {
+//        $comp = Competitor::findOrFail($competitorId);
+
+        return response(Storage::disk('s3')->get($request));
+    }
+
     /**
      * @param Request $request
      * @param integer $competitorId
@@ -101,16 +108,19 @@ class CompetitorController extends Controller
      */
     public function avatar(Request $request, $competitorId)
     {
-        $file = $request->file('avatar');
+
 
 
 //        $storeName = md5($file->getFilename());
 
-        $filePathStore = $file->storePublicly('public');
+//        $filePathStore = $file->storePublicly('public');
+//        Storage::disk('s3')->put('avatars/', $file);
 
-
+        /* @var Competitor $comp */
         $comp = Competitor::findOrFail($competitorId);
-        $comp->avatar_image = Storage::url($filePathStore);
+        $s3Url = $request->file('avatar')->store("avatars/$comp->id", 's3', 'public');
+//        $comp->avatar_image = $s3Url;
+        $comp->avatar_image = Storage::disk('s3')->url($s3Url);
         $comp->save();
 
         return response($comp);

@@ -159,11 +159,13 @@ export default class Competition extends Component {
         <div className="card main-card mb-4">
           <div className="card-body">
             <h4 className="card-title">Add a player</h4>
-            <input type="text" name="player_name" placeholder="name"
-                   onChange={e => this.setState({player_name: e.target.value})}/>
-            <input name="player_email" placeholder="email"
-                   onChange={e => this.setState({player_email: e.target.value})}/>
-            <button onClick={this.handleAddPlayer}>Add</button>
+            <form className="form-inline">
+              <input className="form-control col mr-sm-2" type="text" name="player_name" placeholder="name"
+                     onChange={e => this.setState({player_name: e.target.value})}/>
+              <input className="form-control col mr-sm-2" name="player_email" placeholder="email"
+                     onChange={e => this.setState({player_email: e.target.value})}/>
+              <button className="btn btn-primary col" onClick={this.handleAddPlayer}>Add</button>
+            </form>
           </div>
         </div>
         <div className="card main-card mb-4">
