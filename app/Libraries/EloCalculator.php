@@ -14,6 +14,13 @@ use App\CompetitorElo;
 class EloCalculator
 {
 
+    /**
+     * @param CompetitorElo $competitor1Elo
+     * @param CompetitorElo $competitor2Elo
+     * @param int $winnerId
+     * @return array
+     * @throws \Exception
+     */
     public static function getElo(CompetitorElo $competitor1Elo, CompetitorElo $competitor2Elo, int $winnerId)
     {
         $kFactor = 32;

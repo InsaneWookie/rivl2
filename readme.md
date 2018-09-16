@@ -11,3 +11,13 @@
 - run `npm install --no-bin-links` (there is some issue with the vagrant shared folder and symlinks)
 - update host file, add something like `192.168.10.10	rivl2`
 - `npm run watch-poll` to recompile frontend on save
+
+
+Docker (Laradock)
+- Enable debugging, edit laradock .env file (WORKSPACE_INSTALL_XDEBUG=true)
+
+docker-compose build mysql nginx workspace
+
+Running tests
+Unit test from PhpStorm
+
