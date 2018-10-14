@@ -21,3 +21,36 @@ docker-compose build mysql nginx workspace
 Running tests
 Unit test from PhpStorm
 
+
+Using custom docker-compose
+
+- Make a copy of .env.example and rename it to .env
+  - Set the APP_KEY
+  
+- Create a .env.mysql file
+  - add MYSQL_ROOT_PASSWORD=\<root user password\>  
+- Set database params 
+  - DB_HOST=db 
+  - DB_PORT=3306
+  - DB_DATABASE=rivl2
+  - DB_USERNAME=root
+  - DB_PASSWORD=\<same as MYSQL_ROOT_PASSWORD\>
+  
+`docker-compose up -d`
+
+`docker-compose exec db mysql -p -e 'create database rivl2'`
+
+Composer install
+
+`docker run --rm --interactive --tty --volume $PWD:/app --user $(id -u):$(id -g) composer install`
+
+NPM install
+
+`docker run --rm --interactive --tty --volume $PWD:/app -w /app --user $(id -u):$(id -g) node npm install`
+
+Database
+
+`docker-compose exec app php artisan migrate`
+  
+ 
+

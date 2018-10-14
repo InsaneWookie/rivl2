@@ -1,0 +1,24 @@
+version: '2'
+services:
+
+  #  The Application
+  web:
+    image: rivl2-web:latest
+    build:
+      context: ./
+      dockerfile: web.dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./public:/var/www/public
+  app:
+    image: rivl2-app:latest
+    build:
+      context: ./
+      dockerfile: app.dockerfile
+    env_file: '.env'
+  db:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file: '.env.mysql'

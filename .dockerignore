@@ -1,0 +1,10 @@
+.git
+.idea
+.env
+node_modules
+
+laradock
+storage/framework/cache/**
+storage/framework/sessions/**
+storage/framework/views/**
+bootstrap/cache/**
