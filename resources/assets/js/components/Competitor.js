@@ -73,14 +73,16 @@ export default class Competitor extends Component {
   }
 
   convertGraphData(responseData){
+    let greens = ['#71a95a', '#007944'],
+        reds = ['#f16363', '#cb2727'];
     return responseData.map((score, index) => {
       let eloChange = parseFloat((score.elo_after - score.elo_before).toFixed(2));
       return {
         y: eloChange,
         x: index,
-        f: (eloChange < 0) ? '#8c1a00' : '#008a35'
+        f: (eloChange < 0) ? reds[index % 2] : greens[index % 2]
       }
-    })//.slice(0,10);
+    })
   }
 
   uploadFile(form){
