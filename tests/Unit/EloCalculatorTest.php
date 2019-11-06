@@ -18,6 +18,7 @@ class EloCalculatorTest extends TestCase
 
     /**
      * @throws \Exception
+     * @return void
      */
     public function testGetEloBothPlayersOnSameElo(){
 
