@@ -22,6 +22,15 @@ export default class Competition extends Component {
 
   }
 
+  getDefaultStats(stat, comp){
+    if(!stat){
+      stat = { competitor_id: comp.id, wins: 0, losses: 0, games_played: 0}
+    }
+    stat.winPercentage = stat.games_played === 0 ? 0 : Math.round(stat.wins / stat.games_played * 100);
+
+    return stat;
+  }
+
   componentWillMount() {
     let requests = [
       axios.get(`/api/competition/${this.props.competition}/competitor`),
@@ -38,10 +47,7 @@ export default class Competition extends Component {
       //populate the competior stats info
       competitors.forEach(comp => {
         let stat = _.find(stats, {'competitor_id': comp.id});
-        if(!stat){
-          stat = { competitor_id: comp.id, wins: 0, losses: 0, games_played: 0}
-        }
-        stat.winPercentage = stat.games_played === 0 ? 0 : Math.round(stat.wins / stat.games_played * 100);
+        stat = this.getDefaultStats(stat, comp);
         comp.stats = stat;
       });
 
@@ -74,8 +80,10 @@ export default class Competition extends Component {
       email: this.state.player_email
     })
       .then(res => {
-        let newComp = [...this.state.competitors, res.data];
-        this.setState({competitors: newComp});
+        let newCompetitor = res.data;
+        newCompetitor.stats = this.getDefaultStats(null, newCompetitor);
+        let newComps = this.setCompetitorRank([...this.state.competitors, res.data]);
+        this.setState({competitors: newComps});
       });
 
     event.preventDefault();

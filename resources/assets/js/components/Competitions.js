@@ -16,7 +16,7 @@ export default class Competitions extends Component {
       <div>
         <div className="card main-card mb-4">
           <div className="card-body">
-            <h4 className="card-title">Competitions</h4>
+            <h4 className="card-title">Competitions Test</h4>
           </div>
           <ul className="list-group list-group-flush">
             {this.props.competitions.map((item, index) => (
